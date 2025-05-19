@@ -29,6 +29,8 @@ const handler = NextAuth({
       console.log("User:", JSON.stringify(user, null, 2))
       console.log("Account:", JSON.stringify(account, null, 2))
       console.log("Profile:", JSON.stringify(profile, null, 2))
+      console.log('Prepared statements disabled?', process.env.PRISMA_DISABLE_PREPARED_STATEMENTS);
+      console.log('Database URL:', process.env.DATABASE_URL || process.env.PRISMA_DATABASE_URL);
       return true
     },
     async session({ session, token }) {
