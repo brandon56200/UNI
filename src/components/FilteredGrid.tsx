@@ -1,8 +1,8 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
-import { Check, ChevronsUpDown } from 'lucide-react'
-import { motion } from 'framer-motion'
+import { Check, ChevronsUpDown, Bookmark } from 'lucide-react'
+import { motion, AnimatePresence } from 'framer-motion'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import {
@@ -27,23 +27,19 @@ import {
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Label } from '@/components/ui/label'
+import { Switch } from "@/components/ui/switch"
+import { useUnicorn } from '@/contexts/UnicornContext'
+import { useFilter } from '@/contexts/FilterContext'
 
-// Filter options
-const cities = [
-  { label: 'San Francisco', value: 'sf' },
-  { label: 'New York', value: 'nyc' },
-  { label: 'London', value: 'london' },
-]
-
-const industries = [
-  { label: 'Enterprise Tech', value: 'enterprise-tech' },
-  { label: 'Financial Services', value: 'financial-services' },
-]
-
-const investors = [
-  { label: 'Sequoia Capital', value: 'sequoia' },
-  { label: 'Google', value: 'google' },
-]
+interface Unicorn {
+  City: string;
+  Company: string;
+  Country: string;
+  'Date Joined': string;
+  Industry: string;
+  'Select Investors': string;
+  'Valuation ($B)': number;
+}
 
 // Sample cards for the carousel
 const sampleCards = [
@@ -118,7 +114,7 @@ const MultiSelect = ({
         <Command className="rounded-md bg-neutral-950">
           <CommandInput placeholder={placeholder} className="rounded-t-md text-neutral-50" />
           <CommandEmpty className="text-neutral-50">No results found.</CommandEmpty>
-          <CommandGroup>
+          <CommandGroup className="max-h-[300px] overflow-y-auto">
             {options.map((option) => (
               <CommandItem
                 key={option.value}
@@ -142,22 +138,68 @@ const MultiSelect = ({
 }
 
 // Unicorn Card Component
-const UnicornCard = ({ title, description }: { title: string, description: string }) => (
-  <div className="relative p-[2px] rounded-lg overflow-hidden bg-gradient-to-br from-pink-500 via-purple-500 to-indigo-600 animate-gradient shadow-lg">
-    <div className="absolute inset-0 bg-gradient-to-br from-pink-500 via-purple-500 to-indigo-600 animate-gradient"></div>
-    <Card className="h-full flex flex-col relative bg-white z-10 border-none shadow-md rounded-lg">
-      <CardHeader className="pb-1 pt-1">
-        <CardTitle className="text-base">{title}</CardTitle>
-      </CardHeader>
-      <CardContent className="flex-grow overflow-hidden py-1">
-        <p className="text-xs text-gray-600">{description}</p>
-      </CardContent>
-      <CardFooter className="mt-auto pt-1 pb-1">
-        <Button size="sm" className="text-xs py-0.5 h-7">View Details</Button>
-      </CardFooter>
-    </Card>
-  </div>
-)
+const UnicornCard = ({ unicorn }: { unicorn: Unicorn }) => {
+  const { savedUnicorns, addUnicorn, removeUnicorn } = useUnicorn();
+  const isSaved = savedUnicorns?.includes(unicorn.Company);
+  const [isAnimating, setIsAnimating] = useState(false);
+
+  const handleBookmarkClick = () => {
+    setIsAnimating(true);
+    if (isSaved) {
+      removeUnicorn(unicorn.Company);
+    } else {
+      addUnicorn(unicorn.Company);
+    }
+    // Reset animation state after animation completes
+    setTimeout(() => setIsAnimating(false), 300);
+  };
+
+  return (
+    <div className="relative p-[2px] rounded-lg overflow-hidden bg-gradient-to-br from-pink-500 via-purple-500 to-indigo-600 animate-gradient shadow-lg h-[220px]">
+      <div className="absolute inset-0 bg-gradient-to-br from-pink-500 via-purple-500 to-indigo-600 animate-gradient"></div>
+      <Card className="h-full flex flex-col relative bg-white z-10 border-none shadow-md rounded-lg">
+        <CardHeader className="pb-0 pt-0 relative">
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-base font-semibold line-clamp-1 mb-0" style={{ fontFamily: 'var(--font-geist-sans)' }}>{unicorn.Company || 'Unnamed Company'}</CardTitle>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="p-0 h-8 w-8 hover:bg-transparent"
+              onClick={handleBookmarkClick}
+            >
+              <div className={cn(
+                "relative rounded-full p-[2px]",
+                isSaved && "bg-gradient-to-br from-pink-500 via-purple-500 to-indigo-600 animate-gradient"
+              )}>
+                <Bookmark
+                  className={cn(
+                    "h-5 w-5 transition-all duration-300",
+                    isAnimating && "scale-110",
+                    isSaved 
+                      ? "fill-white stroke-none"
+                      : "stroke-[2.5px] stroke-black fill-none"
+                  )}
+                />
+              </div>
+            </Button>
+          </div>
+        </CardHeader>
+        <CardContent className="flex-grow overflow-hidden -mt-4">
+          <div className="space-y-0.5 text-xs text-gray-500 h-[160px] overflow-y-auto">
+            <p><span className="font-bold">Founded:</span> {new Date(unicorn['Date Joined']).getFullYear() || 'N/A'}</p>
+            <p><span className="font-bold">Valuation:</span> {unicorn['Valuation ($B)'] ? `$${unicorn['Valuation ($B)']}B` : 'N/A'}</p>
+            <p><span className="font-bold">Location:</span> {unicorn.City || 'N/A'}</p>
+            <p><span className="font-bold">Country:</span> {unicorn.Country || 'N/A'}</p>
+            <p><span className="font-bold">Industry:</span> {unicorn.Industry || 'N/A'}</p>
+            {unicorn['Select Investors'] && (
+              <p><span className="font-bold">Investors:</span> {unicorn['Select Investors']}</p>
+            )}
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+};
 
 // Add animation keyframes for the gradient
 const gradientAnimation = `
@@ -173,41 +215,200 @@ const gradientAnimation = `
   background-size: 300% 300%;
   animation: gradient 4s ease-in-out infinite;
 }
+
+/* Custom carousel styles */
+.carousel-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 1rem;
+  height: 650px; /* Adjust based on your card height */
+}
+
+.carousel-content {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 1rem;
+}
 `;
 
 export default function FilteredGrid() {
-  // State for selected filters
-  const [selectedCities, setSelectedCities] = useState<string[]>([])
-  const [selectedIndustries, setSelectedIndustries] = useState<string[]>([])
-  const [selectedInvestors, setSelectedInvestors] = useState<string[]>([])
-  
   // State for open/closed popovers
   const [cityOpen, setCityOpen] = useState(false)
   const [industryOpen, setIndustryOpen] = useState(false)
   const [investorOpen, setInvestorOpen] = useState(false)
 
+  // Get filter state from context
+  const { 
+    selectedCities, 
+    selectedIndustries, 
+    selectedInvestors,
+    setSelectedCities,
+    setSelectedIndustries,
+    setSelectedInvestors,
+    clearAllFilters
+  } = useFilter()
+
+  // State for unicorns data
+  const [allUnicorns, setAllUnicorns] = useState<Unicorn[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [isDataReady, setIsDataReady] = useState(false)
+
+  // State for filter options
+  const [cityOptions, setCityOptions] = useState<FilterOption[]>([])
+  const [industryOptions, setIndustryOptions] = useState<FilterOption[]>([])
+  const [investorOptions, setInvestorOptions] = useState<FilterOption[]>([])
+
+  const [showContent, setShowContent] = useState(false)
+  const { savedUnicorns, showFavorites, setShowFavorites } = useUnicorn()
+
+  // Fetch unicorns data on component mount
+  useEffect(() => {
+    const loadData = async () => {
+      // If we already have data, don't reload
+      if (allUnicorns.length > 0) {
+        setIsLoading(false);
+        setIsDataReady(true);
+        setShowContent(true);
+        return;
+      }
+
+      try {
+        const response = await fetch('/api/unicorns?limit=500');
+        if (!response.ok) {
+          throw new Error('Failed to fetch unicorns');
+        }
+        const data = await response.json();
+        
+        if (!data.unicorns) {
+          throw new Error('Invalid response format');
+        }
+        
+        // Set all unicorns data
+        setAllUnicorns(data.unicorns);
+        
+        // Extract unique values for each filter
+        const cities = new Set<string>();
+        const industries = new Set<string>();
+        const investors = new Set<string>();
+
+        data.unicorns.forEach((unicorn: Unicorn) => {
+          if (unicorn.City) cities.add(unicorn.City);
+          if (unicorn.Industry) industries.add(unicorn.Industry);
+          if (unicorn['Select Investors']) {
+            unicorn['Select Investors'].split(', ').forEach(investor => investors.add(investor));
+          }
+        });
+
+        // Create and set filter options
+        const cityOpts = Array.from(cities).sort().map(city => ({ label: city, value: city }));
+        const industryOpts = Array.from(industries).sort().map(industry => ({ label: industry, value: industry }));
+        const investorOpts = Array.from(investors).sort().map(investor => ({ label: investor, value: investor }));
+
+        setCityOptions(cityOpts);
+        setIndustryOptions(industryOpts);
+        setInvestorOptions(investorOpts);
+
+        setIsLoading(false);
+        setIsDataReady(true);
+        setShowContent(true);
+      } catch (error) {
+        console.error('Error loading unicorns:', error);
+        setIsLoading(false);
+      }
+    };
+
+    loadData();
+  }, []);
+
+  // Filter unicorns based on selected filters and favorites
+  const filteredUnicorns = allUnicorns.filter(unicorn => {
+    // If favorites is enabled, only show saved unicorns
+    if (showFavorites) {
+      if (!savedUnicorns?.includes(unicorn.Company)) return false;
+    }
+
+    // If no filters are selected, show all unicorns (or saved ones if favorites is enabled)
+    if (selectedCities.length === 0 && selectedIndustries.length === 0 && selectedInvestors.length === 0) {
+      return true;
+    }
+
+    // Check each filter
+    if (selectedCities.length > 0 && !selectedCities.includes(unicorn.City)) {
+      return false;
+    }
+    if (selectedIndustries.length > 0 && !selectedIndustries.includes(unicorn.Industry)) {
+      return false;
+    }
+    if (selectedInvestors.length > 0) {
+      const unicornInvestors = unicorn['Select Investors']?.split(', ') || [];
+      const hasMatchingInvestor = unicornInvestors.some(investor =>
+        selectedInvestors.includes(investor)
+      );
+      if (!hasMatchingInvestor) return false;
+    }
+    return true;
+  });
+
+  // Log current state for debugging
+  useEffect(() => {
+    if (isDataReady) {
+      console.log('Current state:', {
+        allUnicorns: allUnicorns,
+        totalUnicorns: allUnicorns.length,
+        filteredCount: filteredUnicorns.length,
+        cityOptions,
+        industryOptions,
+        investorOptions,
+        selectedCities,
+        selectedIndustries,
+        selectedInvestors
+      });
+    }
+  }, [allUnicorns, filteredUnicorns, cityOptions, industryOptions, investorOptions, selectedCities, selectedIndustries, selectedInvestors, isDataReady]);
+
+  // Update localStorage when filters change
+  useEffect(() => {
+    localStorage.setItem('selectedCities', JSON.stringify(selectedCities));
+  }, [selectedCities]);
+
+  useEffect(() => {
+    localStorage.setItem('selectedIndustries', JSON.stringify(selectedIndustries));
+  }, [selectedIndustries]);
+
+  useEffect(() => {
+    localStorage.setItem('selectedInvestors', JSON.stringify(selectedInvestors));
+  }, [selectedInvestors]);
+
   const handleCitySelect = (value: string) => {
-    setSelectedCities(current => 
-      current.includes(value)
-        ? current.filter(item => item !== value)
-        : [...current, value]
+    setSelectedCities(
+      selectedCities.includes(value)
+        ? selectedCities.filter(item => item !== value)
+        : [...selectedCities, value]
     )
   }
 
   const handleIndustrySelect = (value: string) => {
-    setSelectedIndustries(current => 
-      current.includes(value)
-        ? current.filter(item => item !== value)
-        : [...current, value]
+    setSelectedIndustries(
+      selectedIndustries.includes(value)
+        ? selectedIndustries.filter(item => item !== value)
+        : [...selectedIndustries, value]
     )
   }
 
   const handleInvestorSelect = (value: string) => {
-    setSelectedInvestors(current => 
-      current.includes(value)
-        ? current.filter(item => item !== value)
-        : [...current, value]
+    setSelectedInvestors(
+      selectedInvestors.includes(value)
+        ? selectedInvestors.filter(item => item !== value)
+        : [...selectedInvestors, value]
     )
+  }
+
+  // Clear all filters using context
+  const handleClearAll = () => {
+    clearAllFilters()
+    setShowFavorites(false)
   }
 
   // Add the animation to the document
@@ -221,160 +422,143 @@ export default function FilteredGrid() {
     };
   }, []);
 
+  if (isLoading) {
+    return <div className="min-h-[400px] bg-white" />;
+  }
+
+  if (!isDataReady || allUnicorns.length === 0) {
+    return (
+      <div className="text-center py-8">
+        <p className="text-gray-500">No data available.</p>
+      </div>
+    );
+  }
+
   return (
-    <div className="flex items-center justify-center h-full w-full overflow-hidden max-h-screen">
-      <motion.div
-        className="w-full grid grid-rows-[auto_1fr_1fr] gap-10 h-full max-h-[95vh] pt-8 pb-4 overflow-hidden"
-        initial={{ y: 100, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        exit={{ y: 100, opacity: 0 }}
-        transition={{ duration: 0.6, ease: "easeOut" }}
-      >
-        {/* Filter Bar (Row 1 - smaller) */}
-        <motion.div 
-          className="bg-neutral-50 py-4 px-10 rounded-lg shadow-sm flex flex-wrap gap-3 items-center justify-between mb-2 mt-2"
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          exit={{ y: 20, opacity: 0 }}
-          transition={{ 
-            duration: 0.4, 
-            delay: 0.2, 
-            exit: { delay: 0.4 }
-          }}
+    <AnimatePresence mode="wait">
+      {showContent && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.3 }}
+          className="container mx-auto px-4 pt-6 pb-6 flex flex-col items-center justify-start min-h-[calc(100vh-4rem)]"
         >
-          <div className="font-medium">Filter By:</div>
-          
-          <div className="flex flex-wrap gap-3">
-            <div className="flex items-center gap-2">
-              <span className="text-sm text-neutral-500">City:</span>
-              <MultiSelect
-                options={cities}
-                selectedValues={selectedCities}
-                onSelect={handleCitySelect}
-                isOpen={cityOpen}
-                setIsOpen={setCityOpen}
-                placeholder="Search cities..."
-              />
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.4, delay: 0.2 }}
+            className="backdrop-blur-md bg-white/30 rounded-lg shadow-lg p-4 mb-12 border border-white/20 w-full max-w-7xl"
+          >
+            <div className="flex items-center justify-between mb-2">
+              <h2 className="text-lg font-semibold text-gray-900">Filter Unicorns</h2>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  handleClearAll();
+                  setShowFavorites(false);
+                }}
+                disabled={selectedCities.length === 0 && selectedIndustries.length === 0 && selectedInvestors.length === 0 && !showFavorites}
+                className="text-xs bg-neutral-800 hover:bg-neutral-700 text-white border-none disabled:bg-neutral-300 disabled:text-neutral-500"
+              >
+                Clear All
+              </Button>
             </div>
-            
-            <div className="flex items-center gap-2">
-              <span className="text-sm text-neutral-500">Industry:</span>
-              <MultiSelect
-                options={industries}
-                selectedValues={selectedIndustries}
-                onSelect={handleIndustrySelect}
-                isOpen={industryOpen}
-                setIsOpen={setIndustryOpen}
-                placeholder="Search industries..."
-              />
+            <div className="flex flex-wrap items-center gap-4">
+              <div className="flex items-center gap-1">
+                <Label className="text-sm font-medium text-gray-700 whitespace-nowrap">City:</Label>
+                <MultiSelect
+                  options={cityOptions}
+                  selectedValues={selectedCities}
+                  onSelect={handleCitySelect}
+                  isOpen={cityOpen}
+                  setIsOpen={setCityOpen}
+                  placeholder="Select cities..."
+                />
+              </div>
+              <div className="flex items-center gap-1">
+                <Label className="text-sm font-medium text-gray-700 whitespace-nowrap">Industry:</Label>
+                <MultiSelect
+                  options={industryOptions}
+                  selectedValues={selectedIndustries}
+                  onSelect={handleIndustrySelect}
+                  isOpen={industryOpen}
+                  setIsOpen={setIndustryOpen}
+                  placeholder="Select industries..."
+                />
+              </div>
+              <div className="flex items-center gap-1">
+                <Label className="text-sm font-medium text-gray-700 whitespace-nowrap">Investors:</Label>
+                <MultiSelect
+                  options={investorOptions}
+                  selectedValues={selectedInvestors}
+                  onSelect={handleInvestorSelect}
+                  isOpen={investorOpen}
+                  setIsOpen={setInvestorOpen}
+                  placeholder="Select investors..."
+                />
+              </div>
+              <div className="flex items-center gap-2 ml-auto">
+                <Label htmlFor="favorites" className="text-sm font-medium text-gray-700">Favorites</Label>
+                <Switch
+                  id="favorites"
+                  checked={showFavorites}
+                  onCheckedChange={setShowFavorites}
+                  className="data-[state=checked]:bg-neutral-800 data-[state=unchecked]:bg-white data-[state=unchecked]:border-2 data-[state=unchecked]:border-neutral-300 [&>span]:bg-neutral-300 data-[state=checked]:[&>span]:bg-white"
+                />
+              </div>
             </div>
-            
-            <div className="flex items-center gap-2">
-              <span className="text-sm text-neutral-500">Investors:</span>
-              <MultiSelect
-                options={investors}
-                selectedValues={selectedInvestors}
-                onSelect={handleInvestorSelect}
-                isOpen={investorOpen}
-                setIsOpen={setInvestorOpen}
-                placeholder="Search investors..."
-              />
-            </div>
-          </div>
-          
-          <div className="ml-auto">
-            <Button 
-              variant="default"
-              onClick={() => {
-                setSelectedCities([])
-                setSelectedIndustries([])
-                setSelectedInvestors([])
-              }}
-              size="sm"
-              className="text-sm font-medium bg-neutral-950 text-neutral-50 hover:bg-neutral-900 transition-colors"
-              disabled={selectedCities.length === 0 && selectedIndustries.length === 0 && selectedInvestors.length === 0}
+          </motion.div>
+
+          {filteredUnicorns.length > 0 ? (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.4, delay: 0.4 }}
+              className="space-y-12 w-full max-w-7xl"
             >
-              Clear All
-            </Button>
-          </div>
-        </motion.div>
-
-        {/* Carousel 1 (Row 2) - Middle row */}
-        <motion.div
-          initial={{ y: 40, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          exit={{ y: 40, opacity: 0 }}
-          transition={{ 
-            duration: 0.5, 
-            delay: 0.3,
-            exit: { delay: 0.2 }
-          }}
-          className="relative flex flex-col mb-0 overflow-hidden"
-        >
-          <h2 className="text-lg font-semibold mb-1">Featured Unicorns</h2>
-          <div className="relative mx-auto max-w-5xl overflow-visible px-16">
-            <div className="relative">
               <Carousel
-                className="w-full relative"
                 opts={{
                   align: "start",
-                  slidesToScroll: 1,
+                  loop: true,
                 }}
+                className="w-full"
               >
-                <CarouselContent className="-ml-6">
-                  {sampleCards.map((card) => (
-                    <CarouselItem key={card.id} className="pl-6 md:basis-1/3 flex-grow-0 flex-shrink-0">
-                      <div className="p-4 h-full">
-                        <UnicornCard title={card.title} description={card.description} />
+                <CarouselContent className="-ml-4">
+                  {Array.from({ length: Math.ceil(filteredUnicorns.length / 6) }).map((_, pageIndex) => (
+                    <CarouselItem key={pageIndex} className="pl-4 basis-full">
+                      <div className="grid grid-cols-3 gap-4">
+                        {filteredUnicorns.slice(pageIndex * 6, (pageIndex + 1) * 6).map((unicorn, index) => (
+                          <div key={`${unicorn.City}-${index}`} className="h-[220px]">
+                            <UnicornCard unicorn={unicorn} />
+                          </div>
+                        ))}
                       </div>
                     </CarouselItem>
                   ))}
                 </CarouselContent>
-                <CarouselPrevious className="bg-white border-2 border-neutral-300 shadow-md -left-16 top-1/2 z-10 size-10" />
-                <CarouselNext className="bg-white border-2 border-neutral-300 shadow-md -right-16 top-1/2 z-10 size-10" />
+                <div className="flex items-center justify-center mt-12">
+                  <CarouselPrevious className="relative static mr-2" />
+                  <CarouselNext className="relative static ml-2" />
+                </div>
               </Carousel>
-            </div>
-          </div>
+            </motion.div>
+          ) : (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.4, delay: 0.4 }}
+              className="text-center py-6 w-full max-w-7xl"
+            >
+              <p className="text-gray-500">No unicorns found matching the selected filters.</p>
+            </motion.div>
+          )}
         </motion.div>
-
-        {/* Carousel 2 (Row 3) - Bottom row */}
-        <motion.div
-          initial={{ y: 60, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          exit={{ y: 60, opacity: 0 }}
-          transition={{ 
-            duration: 0.5, 
-            delay: 0.4,
-            exit: { delay: 0 }
-          }}
-          className="relative flex flex-col overflow-hidden mt-[-24px]"
-        >
-          <h2 className="text-lg font-semibold mb-1">Trending Unicorns</h2>
-          <div className="relative mx-auto max-w-5xl overflow-visible px-16">
-            <div className="relative">
-              <Carousel
-                className="w-full relative"
-                opts={{
-                  align: "start",
-                  slidesToScroll: 1,
-                }}
-              >
-                <CarouselContent className="-ml-6">
-                  {sampleCards.map((card) => (
-                    <CarouselItem key={card.id} className="pl-6 md:basis-1/3 flex-grow-0 flex-shrink-0">
-                      <div className="p-4 h-full">
-                        <UnicornCard title={card.title} description={card.description} />
-                      </div>
-                    </CarouselItem>
-                  ))}
-                </CarouselContent>
-                <CarouselPrevious className="bg-white border-2 border-neutral-300 shadow-md -left-16 top-1/2 z-10 size-10" />
-                <CarouselNext className="bg-white border-2 border-neutral-300 shadow-md -right-16 top-1/2 z-10 size-10" />
-              </Carousel>
-            </div>
-          </div>
-        </motion.div>
-      </motion.div>
-    </div>
-  )
+      )}
+    </AnimatePresence>
+  );
 } 

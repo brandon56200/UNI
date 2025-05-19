@@ -4,24 +4,24 @@ const prisma = new PrismaClient()
 
 // Type for the User model
 export type User = {
-  ClientID: string
+  email: string
   SavedUnicorns: string[]
 }
 
 // Create or update a user's saved unicorns
-export async function saveUnicorn(clientId: string, companyName: string) {
+export async function saveUnicorn(email: string, companyName: string) {
   try {
-    console.log("saveUnicorn called with:", { clientId, companyName })
+    console.log("saveUnicorn called with:", { email, companyName })
     
     const user = await prisma.user.findUnique({
       where: {
-        ClientID: clientId,
+        email: email,
       },
     })
     console.log("Existing user found:", user)
 
     let savedUnicorns: string[] = []
-    if (user) {
+    if (user?.SavedUnicorns) {
       savedUnicorns = JSON.parse(user.SavedUnicorns)
     }
 
@@ -30,27 +30,27 @@ export async function saveUnicorn(clientId: string, companyName: string) {
     }
 
     console.log("Attempting to upsert user with data:", {
-      ClientID: clientId,
+      email: email,
       SavedUnicorns: JSON.stringify(savedUnicorns)
     })
 
     const updatedUser = await prisma.user.upsert({
       where: {
-        ClientID: clientId,
+        email: email,
       },
       update: {
         SavedUnicorns: JSON.stringify(savedUnicorns),
       },
       create: {
-        ClientID: clientId,
+        email: email,
         SavedUnicorns: JSON.stringify([companyName]),
       },
     })
     console.log("User upsert result:", updatedUser)
 
     return {
-      ClientID: updatedUser.ClientID,
-      SavedUnicorns: JSON.parse(updatedUser.SavedUnicorns),
+      email: updatedUser.email,
+      SavedUnicorns: updatedUser.SavedUnicorns ? JSON.parse(updatedUser.SavedUnicorns) : [],
     }
   } catch (error) {
     console.error('Error saving unicorn:', error)
@@ -59,18 +59,18 @@ export async function saveUnicorn(clientId: string, companyName: string) {
 }
 
 // Get all saved unicorns for a user
-export async function getSavedUnicorns(clientId: string) {
+export async function getSavedUnicorns(email: string) {
   try {
-    console.log("getSavedUnicorns called with clientId:", clientId)
+    console.log("getSavedUnicorns called with email:", email)
     
     const user = await prisma.user.findUnique({
       where: {
-        ClientID: clientId,
+        email: email,
       },
     })
     console.log("User found:", user)
     
-    return user ? JSON.parse(user.SavedUnicorns) : []
+    return user?.SavedUnicorns ? JSON.parse(user.SavedUnicorns) : []
   } catch (error) {
     console.error('Error getting saved unicorns:', error)
     throw error
@@ -78,11 +78,11 @@ export async function getSavedUnicorns(clientId: string) {
 }
 
 // Remove a saved unicorn
-export async function removeUnicorn(clientId: string, companyName: string) {
+export async function removeUnicorn(email: string, companyName: string) {
   try {
     const user = await prisma.user.findUnique({
       where: {
-        ClientID: clientId,
+        email: email,
       },
     })
 
@@ -90,14 +90,14 @@ export async function removeUnicorn(clientId: string, companyName: string) {
       throw new Error('User not found')
     }
 
-    const savedUnicorns = JSON.parse(user.SavedUnicorns)
+    const savedUnicorns = user.SavedUnicorns ? JSON.parse(user.SavedUnicorns) : []
     const updatedUnicorns = savedUnicorns.filter(
       (unicorn: string) => unicorn !== companyName
     )
 
     const updatedUser = await prisma.user.update({
       where: {
-        ClientID: clientId,
+        email: email,
       },
       data: {
         SavedUnicorns: JSON.stringify(updatedUnicorns),
@@ -105,8 +105,8 @@ export async function removeUnicorn(clientId: string, companyName: string) {
     })
 
     return {
-      ClientID: updatedUser.ClientID,
-      SavedUnicorns: JSON.parse(updatedUser.SavedUnicorns),
+      email: updatedUser.email,
+      SavedUnicorns: updatedUser.SavedUnicorns ? JSON.parse(updatedUser.SavedUnicorns) : [],
     }
   } catch (error) {
     console.error('Error removing unicorn:', error)
@@ -115,11 +115,11 @@ export async function removeUnicorn(clientId: string, companyName: string) {
 }
 
 // Delete a user and all their saved unicorns
-export async function deleteUser(clientId: string) {
+export async function deleteUser(email: string) {
   try {
     await prisma.user.delete({
       where: {
-        ClientID: clientId,
+        email: email,
       },
     })
   } catch (error) {

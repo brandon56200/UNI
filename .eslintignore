@@ -1,0 +1,8 @@
+**/generated/**
+**/prisma/**
+**/runtime/**
+**/*.js
+**/*.d.ts 
+node_modules/.prisma/client
+@prisma/client
+**/src/generated/prisma/runtime/wasm

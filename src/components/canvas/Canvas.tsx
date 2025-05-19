@@ -1,10 +1,13 @@
 'use client'
 
-import React, { useRef, useEffect } from 'react'
+import React, { useRef, useEffect, useState, Suspense } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
 import { useGLTF, Environment } from '@react-three/drei'
 import * as THREE from 'three'
 import { motion } from 'framer-motion'
+
+// Set the default color space
+THREE.ColorManagement.enabled = true
 
 // Custom shader for soft shadow
 const softShadowMaterial = {
@@ -170,9 +173,13 @@ export default function AbstractCanvas({ isScrolling = false, onPrerender }: Abs
     <div className="w-full h-full">
       <Canvas
         camera={{ position: [0, 1, 4.75], fov: 45 }}
-        style={{ background: '#F5F5F5' }}
-        onCreated={() => {
-          // When the Canvas is created and ready, signal completion
+        style={{ background: 'hsl(var(--background))' }}
+        onCreated={({ gl }) => {
+          // For Three.js v0.157.0+, set outputColorSpace if available
+          if ('outputColorSpace' in gl) {
+            // Prefer the enum if available, otherwise fallback to string
+            gl.outputColorSpace = (THREE as any).SRGBColorSpace || 'srgb';
+          }
           if (onPrerender) {
             onPrerender();
           }
@@ -187,10 +194,11 @@ export default function AbstractCanvas({ isScrolling = false, onPrerender }: Abs
           intensity={2} 
         />
         
-        {/* Environment lighting for better reflections */}
-        <Environment preset="city" />
-        
-        <AbstractModel isScrolling={isScrolling} />
+        <Suspense fallback={null}>
+          {/* Environment lighting for better reflections */}
+          <Environment files="/potsdamer_platz_1k.hdr" />
+          <AbstractModel isScrolling={isScrolling} />
+        </Suspense>
       </Canvas>
     </div>
   )

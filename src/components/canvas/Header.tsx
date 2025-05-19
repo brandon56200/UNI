@@ -2,7 +2,9 @@
 
 import { motion } from 'framer-motion'
 import LoginButton from '../auth/LoginButton'
-import { useRef, useEffect } from 'react'
+import { useRef, useEffect, useState } from 'react'
+import AboutPage from './AboutPage'
+import ContactPage from './ContactPage'
 
 interface HeaderProps {
   onHomeClick?: () => void;
@@ -10,6 +12,7 @@ interface HeaderProps {
 }
 
 export default function Header({ onHomeClick, onAnimationComplete }: HeaderProps) {
+  const [currentPage, setCurrentPage] = useState<'home' | 'about' | 'contact'>('home');
   const animationElementsRef = useRef({
     header: false,
     logo: false,
@@ -74,89 +77,114 @@ export default function Header({ onHomeClick, onAnimationComplete }: HeaderProps
     }
   };
 
+  const handleHomeClick = () => {
+    setCurrentPage('home');
+    if (onHomeClick) {
+      onHomeClick();
+    }
+  };
+
+  const handleAboutClick = () => {
+    setCurrentPage('about');
+  };
+
+  const handleContactClick = () => {
+    setCurrentPage('contact');
+  };
+
   return (
-    <motion.header 
-      className="fixed top-0 left-0 right-0 z-50"
-      variants={headerVariants}
-      initial="hidden"
-      animate="visible"
-      onAnimationComplete={() => {
-        animationElementsRef.current.header = true;
-        checkAllAnimationsComplete();
-      }}
-    >
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="flex h-16 items-center justify-between">
-          <div className="flex items-center">
-            <motion.div 
-              className="text-3xl font-bold text-gray-900"
-              variants={itemVariants}
-              onAnimationComplete={() => {
-                animationElementsRef.current.logo = true;
-                checkAllAnimationsComplete();
-              }}
-            >
-              🦄 UNI
-            </motion.div>
-          </div>
-          
-          <motion.nav 
-            className="flex items-center space-x-8"
-            variants={childrenVariants}
-          >
-            <motion.button 
-              onClick={onHomeClick}
-              className="text-gray-600 hover:text-gray-900 transition-colors"
-              variants={itemVariants}
-              onAnimationComplete={() => {
-                animationElementsRef.current.navItems[0] = true;
-                checkAllAnimationsComplete();
-              }}
-            >
-              Home
-            </motion.button>
-            <motion.a 
-              href="#" 
-              className="text-gray-600 hover:text-gray-900 transition-colors"
-              variants={itemVariants}
-              onAnimationComplete={() => {
-                animationElementsRef.current.navItems[1] = true;
-                checkAllAnimationsComplete();
-              }}
-            >
-              About
-            </motion.a>
-            <motion.a 
-              href="#" 
-              className="text-gray-600 hover:text-gray-900 transition-colors"
-              variants={itemVariants}
-              onAnimationComplete={() => {
-                animationElementsRef.current.navItems[2] = true;
-                checkAllAnimationsComplete();
-              }}
-            >
-              Contact
-            </motion.a>
-            <motion.div
-              variants={itemVariants}
-              onAnimationComplete={() => {
-                animationElementsRef.current.navItems[3] = true;
-                checkAllAnimationsComplete();
-              }}
-            >
-              <LoginButton />
-            </motion.div>
-          </motion.nav>
-        </div>
-      </div>
-      
-      {/* Glassmorphic background */}
-      <div 
-        className="absolute inset-0 -z-10 backdrop-blur-md bg-white/30 border-b border-white/20"
-        style={{
-          boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)'
+    <>
+      <motion.header 
+        className="fixed top-0 left-0 right-0 z-50"
+        variants={headerVariants}
+        initial="hidden"
+        animate="visible"
+        onAnimationComplete={() => {
+          animationElementsRef.current.header = true;
+          checkAllAnimationsComplete();
         }}
-      />
-    </motion.header>
+      >
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="flex h-16 items-center justify-between">
+            <div className="flex items-center">
+              <motion.div 
+                className="text-3xl font-bold text-gray-900 select-none"
+                variants={itemVariants}
+                onAnimationComplete={() => {
+                  animationElementsRef.current.logo = true;
+                  checkAllAnimationsComplete();
+                }}
+              >
+                🦄 UNI
+              </motion.div>
+            </div>
+            
+            <motion.nav 
+              className="flex items-center space-x-8"
+              variants={childrenVariants}
+            >
+              <motion.button 
+                onClick={handleHomeClick}
+                className={`text-gray-600 hover:text-gray-900 transition-colors ${currentPage === 'home' ? 'font-semibold' : ''}`}
+                variants={itemVariants}
+                onAnimationComplete={() => {
+                  animationElementsRef.current.navItems[0] = true;
+                  checkAllAnimationsComplete();
+                }}
+              >
+                Home
+              </motion.button>
+              <motion.button 
+                onClick={handleAboutClick}
+                className={`text-gray-600 hover:text-gray-900 transition-colors ${currentPage === 'about' ? 'font-semibold' : ''}`}
+                variants={itemVariants}
+                onAnimationComplete={() => {
+                  animationElementsRef.current.navItems[1] = true;
+                  checkAllAnimationsComplete();
+                }}
+              >
+                About
+              </motion.button>
+              <motion.button 
+                onClick={handleContactClick}
+                className={`text-gray-600 hover:text-gray-900 transition-colors ${currentPage === 'contact' ? 'font-semibold' : ''}`}
+                variants={itemVariants}
+                onAnimationComplete={() => {
+                  animationElementsRef.current.navItems[2] = true;
+                  checkAllAnimationsComplete();
+                }}
+              >
+                Contact
+              </motion.button>
+              <motion.div
+                variants={itemVariants}
+                onAnimationComplete={() => {
+                  animationElementsRef.current.navItems[3] = true;
+                  checkAllAnimationsComplete();
+                }}
+              >
+                <LoginButton />
+              </motion.div>
+            </motion.nav>
+          </div>
+        </div>
+        
+        {/* Glassmorphic background */}
+        <div 
+          className="absolute inset-0 -z-10 backdrop-blur-md bg-white/30 border-b border-white/20"
+          style={{
+            boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)'
+          }}
+        />
+      </motion.header>
+
+      {/* Page Overlays */}
+      {currentPage === 'about' && (
+        <AboutPage onClose={() => setCurrentPage('home')} />
+      )}
+      {currentPage === 'contact' && (
+        <ContactPage onClose={() => setCurrentPage('home')} />
+      )}
+    </>
   )
 } 

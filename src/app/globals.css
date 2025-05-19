@@ -105,14 +105,12 @@
     --input: 0 0% 14.9%;
     --ring: 0 0% 83.1%;
   }
-}
 
-@layer base {
   * {
     @apply border-border;
   }
   html, body {
-    @apply bg-background text-foreground;
+    @apply bg-[#F5F5F5] text-foreground;
     overflow: hidden !important;
     height: 100vh;
     max-height: 100vh;
@@ -125,6 +123,17 @@
   /* Explicitly disable scrolling for all scroll containers */
   ::-webkit-scrollbar {
     display: none;
+  }
+
+  /* Add pointer cursor to all clickable elements */
+  button, 
+  [role="button"],
+  a,
+  input[type="submit"],
+  input[type="button"],
+  input[type="reset"],
+  .cursor-pointer {
+    cursor: pointer !important;
   }
 }
 

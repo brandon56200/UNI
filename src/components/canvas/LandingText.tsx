@@ -119,7 +119,7 @@ export default function LandingText({ onGetStarted, onPrerender }: LandingTextPr
           }}
         >
           {/* Button text */}
-          <span className="relative z-10">Get Started</span>
+          <span className="relative">Get Started</span>
         </motion.button>
       </div>
     </motion.div>
