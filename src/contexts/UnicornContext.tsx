@@ -33,11 +33,13 @@ export function UnicornProvider({ children }: { children: ReactNode }) {
     setIsLoading(true)
     setError(null)
     try {
+      console.log('Refreshing unicorns for user:', session.user.email)
       const response = await fetch('/api/user')
       if (!response.ok) {
         throw new Error('Failed to fetch saved unicorns')
       }
       const data = await response.json()
+      console.log('Received saved unicorns:', data)
       setSavedUnicorns(data.savedUnicorns || [])
     } catch (err) {
       console.error('Error fetching saved unicorns:', err)
@@ -52,6 +54,7 @@ export function UnicornProvider({ children }: { children: ReactNode }) {
     
     try {
       setError(null)
+      console.log('Adding unicorn:', company, 'for user:', session.user.email)
       
       const response = await fetch('/api/user', {
         method: 'POST',
@@ -64,6 +67,7 @@ export function UnicornProvider({ children }: { children: ReactNode }) {
       }
       
       const data = await response.json()
+      console.log('Updated saved unicorns:', data)
       setSavedUnicorns(data.savedUnicorns || [])
     } catch (err) {
       console.error('Error adding unicorn:', err)
@@ -77,6 +81,7 @@ export function UnicornProvider({ children }: { children: ReactNode }) {
     
     try {
       setError(null)
+      console.log('Removing unicorn:', company, 'for user:', session.user.email)
       
       const response = await fetch('/api/user', {
         method: 'POST',
@@ -91,6 +96,7 @@ export function UnicornProvider({ children }: { children: ReactNode }) {
       }
       
       const data = await response.json()
+      console.log('Updated saved unicorns:', data)
       setSavedUnicorns(data.savedUnicorns || [])
     } catch (err) {
       console.error('Error removing unicorn:', err)
@@ -101,19 +107,39 @@ export function UnicornProvider({ children }: { children: ReactNode }) {
 
   // Load initial data when session changes
   useEffect(() => {
+    console.log('Session status changed:', status)
     if (status === 'authenticated' && session?.user?.email) {
+      console.log('User authenticated, refreshing unicorns')
       refreshUnicorns()
     } else if (status === 'unauthenticated') {
+      console.log('User unauthenticated, clearing unicorns')
       setSavedUnicorns([])
       setIsLoading(false)
     }
   }, [session, status])
 
+  // Refresh data when the window regains focus
+  useEffect(() => {
+    const handleFocus = () => {
+      console.log('Window focused, checking session and refreshing if needed')
+      if (status === 'authenticated' && session?.user?.email) {
+        refreshUnicorns()
+      }
+    }
+
+    window.addEventListener('focus', handleFocus)
+    return () => window.removeEventListener('focus', handleFocus)
+  }, [session, status])
+
   // Periodically refresh saved unicorns while authenticated
   useEffect(() => {
     if (status === 'authenticated' && session?.user?.email) {
+      console.log('Setting up periodic refresh')
       const interval = setInterval(refreshUnicorns, 30000) // Refresh every 30 seconds
-      return () => clearInterval(interval)
+      return () => {
+        console.log('Clearing periodic refresh')
+        clearInterval(interval)
+      }
     }
   }, [session, status])
 
