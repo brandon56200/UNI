@@ -23,111 +23,12 @@ export function UnicornProvider({ children }: { children: ReactNode }) {
   const [error, setError] = useState<string | null>(null)
   const [showFavorites, setShowFavorites] = useState(false)
 
-  // Load saved unicorns from localStorage on mount
-  useEffect(() => {
-    const loadSavedUnicorns = () => {
-      try {
-        const saved = localStorage.getItem('savedUnicorns')
-        if (saved) {
-          setSavedUnicorns(JSON.parse(saved))
-        }
-      } catch (err) {
-        console.error('Error loading saved unicorns:', err)
-      }
-    }
-
-    loadSavedUnicorns()
-  }, [])
-
-  // Save unicorns to localStorage whenever they change
-  useEffect(() => {
-    localStorage.setItem('savedUnicorns', JSON.stringify(savedUnicorns))
-  }, [savedUnicorns])
-
-  // Save favorites state to localStorage whenever it changes
-  useEffect(() => {
-    localStorage.setItem('showFavorites', JSON.stringify(showFavorites))
-  }, [showFavorites])
-
-  // Load favorites state from localStorage on mount
-  useEffect(() => {
-    const loadFavoritesState = () => {
-      try {
-        const saved = localStorage.getItem('showFavorites')
-        if (saved) {
-          setShowFavorites(JSON.parse(saved))
-        }
-      } catch (err) {
-        console.error('Error loading favorites state:', err)
-      }
-    }
-
-    loadFavoritesState()
-  }, [])
-
-  const addUnicorn = async (company: string) => {
-    if (!session?.user?.email) return;
-    
-    try {
-      setError(null);
-      
-      // Add locally first for immediate UI feedback
-      const updatedUnicorns = [...savedUnicorns];
-      if (!updatedUnicorns.includes(company)) {
-        updatedUnicorns.push(company);
-      }
-      
-      // Update API
-      const response = await fetch('/api/user', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ savedUnicorns: updatedUnicorns })
-      });
-      
-      const result = await response.json();
-      if (result.error) throw new Error(result.error);
-      
-      // Set from API response to ensure consistency
-      setSavedUnicorns(result.savedUnicorns);
-    } catch (err) {
-      console.error('Error adding unicorn:', err);
-      setError('Failed to save unicorn');
-      // Refresh to get consistent state
-      refreshUnicorns();
-    }
-  };
-
-  const removeUnicorn = async (company: string) => {
-    if (!session?.user?.email) return;
-    
-    try {
-      setError(null);
-      
-      // Remove locally first for immediate UI feedback
-      const updatedUnicorns = savedUnicorns.filter(name => name !== company);
-      
-      // Update API
-      const response = await fetch('/api/user', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ savedUnicorns: updatedUnicorns })
-      });
-      
-      const result = await response.json();
-      if (result.error) throw new Error(result.error);
-      
-      // Set from API response to ensure consistency
-      setSavedUnicorns(result.savedUnicorns);
-    } catch (err) {
-      console.error('Error removing unicorn:', err);
-      setError('Failed to remove unicorn');
-      // Refresh to get consistent state
-      refreshUnicorns();
-    }
-  };
-
   const refreshUnicorns = async () => {
-    if (!session?.user?.email) return;
+    if (!session?.user?.email) {
+      setSavedUnicorns([])
+      setIsLoading(false)
+      return
+    }
     
     setIsLoading(true)
     setError(null)
@@ -139,9 +40,62 @@ export function UnicornProvider({ children }: { children: ReactNode }) {
       const data = await response.json()
       setSavedUnicorns(data.savedUnicorns || [])
     } catch (err) {
+      console.error('Error fetching saved unicorns:', err)
       setError(err instanceof Error ? err.message : 'An error occurred')
     } finally {
       setIsLoading(false)
+    }
+  }
+
+  const addUnicorn = async (company: string) => {
+    if (!session?.user?.email) return
+    
+    try {
+      setError(null)
+      
+      const response = await fetch('/api/user', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ savedUnicorns: [...savedUnicorns, company] })
+      })
+      
+      if (!response.ok) {
+        throw new Error('Failed to save unicorn')
+      }
+      
+      const data = await response.json()
+      setSavedUnicorns(data.savedUnicorns || [])
+    } catch (err) {
+      console.error('Error adding unicorn:', err)
+      setError('Failed to save unicorn')
+      refreshUnicorns() // Refresh to ensure consistent state
+    }
+  }
+
+  const removeUnicorn = async (company: string) => {
+    if (!session?.user?.email) return
+    
+    try {
+      setError(null)
+      
+      const response = await fetch('/api/user', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          savedUnicorns: savedUnicorns.filter(name => name !== company)
+        })
+      })
+      
+      if (!response.ok) {
+        throw new Error('Failed to remove unicorn')
+      }
+      
+      const data = await response.json()
+      setSavedUnicorns(data.savedUnicorns || [])
+    } catch (err) {
+      console.error('Error removing unicorn:', err)
+      setError('Failed to remove unicorn')
+      refreshUnicorns() // Refresh to ensure consistent state
     }
   }
 
@@ -152,6 +106,14 @@ export function UnicornProvider({ children }: { children: ReactNode }) {
     } else if (status === 'unauthenticated') {
       setSavedUnicorns([])
       setIsLoading(false)
+    }
+  }, [session, status])
+
+  // Periodically refresh saved unicorns while authenticated
+  useEffect(() => {
+    if (status === 'authenticated' && session?.user?.email) {
+      const interval = setInterval(refreshUnicorns, 30000) // Refresh every 30 seconds
+      return () => clearInterval(interval)
     }
   }, [session, status])
 
