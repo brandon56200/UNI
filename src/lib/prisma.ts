@@ -4,18 +4,20 @@ const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined
 }
 
+// Log connection details (without sensitive info)
+const dbUrl = process.env.POSTGRES_PRISMA_URL
+console.log('Database URL configuration:', {
+  hasPgbouncer: dbUrl?.includes('pgbouncer=true'),
+  hasConnectionLimit: dbUrl?.includes('connection_limit'),
+  hasPoolTimeout: dbUrl?.includes('pool_timeout'),
+  isSupabase: dbUrl?.includes('supabase.co')
+})
+
 export const prisma = globalForPrisma.prisma ?? new PrismaClient({
   log: ['error'],
   datasources: {
     db: {
       url: process.env.POSTGRES_PRISMA_URL
-    }
-  },
-  // Disable prepared statements to avoid the "already exists" error
-  // This is a workaround for the issue with connection pooling
-  __internal: {
-    engine: {
-      preparedStatements: false
     }
   }
 })
