@@ -25,17 +25,6 @@ const handler = NextAuth({
     strategy: "jwt",
     maxAge: 30 * 24 * 60 * 60, // 30 days
   },
-  cookies: {
-    sessionToken: {
-      name: `next-auth.session-token`,
-      options: {
-        httpOnly: true,
-        sameSite: 'lax',
-        path: '/',
-        secure: process.env.NODE_ENV === 'production'
-      }
-    }
-  },
   callbacks: {
     async signIn({ user, account, profile, email, credentials }) {
       console.log("🔍 SignIn Callback Called")
@@ -70,7 +59,6 @@ const handler = NextAuth({
       return token
     },
     async redirect({ url, baseUrl }) {
-      // This helps with popup windows
       return url.startsWith(baseUrl) ? url : baseUrl
     }
   },
