@@ -37,6 +37,8 @@ const handler = NextAuth({
       console.log("🔍 Session Callback Called")
       console.log("Session:", JSON.stringify(session, null, 2))
       console.log("Token:", JSON.stringify(token, null, 2))
+      console.log('Prepared statements disabled?', process.env.PRISMA_DISABLE_PREPARED_STATEMENTS);
+      console.log('Database URL:', process.env.DATABASE_URL || process.env.PRISMA_DATABASE_URL);
       
       if (session.user) {
         session.user.id = token.sub || ""
