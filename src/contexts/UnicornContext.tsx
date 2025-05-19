@@ -40,7 +40,12 @@ export function UnicornProvider({ children }: { children: ReactNode }) {
       }
       const data = await response.json()
       console.log('Received saved unicorns:', data)
-      setSavedUnicorns(data.savedUnicorns || [])
+      if (data.savedUnicorns) {
+        setSavedUnicorns(data.savedUnicorns)
+      } else {
+        console.error('No savedUnicorns in response:', data)
+        setSavedUnicorns([])
+      }
     } catch (err) {
       console.error('Error fetching saved unicorns:', err)
       setError(err instanceof Error ? err.message : 'An error occurred')
@@ -56,6 +61,9 @@ export function UnicornProvider({ children }: { children: ReactNode }) {
       setError(null)
       console.log('Adding unicorn:', company, 'for user:', session.user.email)
       
+      // Optimistically update UI
+      setSavedUnicorns(prev => [...prev, company])
+      
       const response = await fetch('/api/user', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -68,7 +76,12 @@ export function UnicornProvider({ children }: { children: ReactNode }) {
       
       const data = await response.json()
       console.log('Updated saved unicorns:', data)
-      setSavedUnicorns(data.savedUnicorns || [])
+      if (data.savedUnicorns) {
+        setSavedUnicorns(data.savedUnicorns)
+      } else {
+        console.error('No savedUnicorns in response:', data)
+        refreshUnicorns() // Refresh to get correct state
+      }
     } catch (err) {
       console.error('Error adding unicorn:', err)
       setError('Failed to save unicorn')
@@ -82,6 +95,9 @@ export function UnicornProvider({ children }: { children: ReactNode }) {
     try {
       setError(null)
       console.log('Removing unicorn:', company, 'for user:', session.user.email)
+      
+      // Optimistically update UI
+      setSavedUnicorns(prev => prev.filter(name => name !== company))
       
       const response = await fetch('/api/user', {
         method: 'POST',
@@ -97,7 +113,12 @@ export function UnicornProvider({ children }: { children: ReactNode }) {
       
       const data = await response.json()
       console.log('Updated saved unicorns:', data)
-      setSavedUnicorns(data.savedUnicorns || [])
+      if (data.savedUnicorns) {
+        setSavedUnicorns(data.savedUnicorns)
+      } else {
+        console.error('No savedUnicorns in response:', data)
+        refreshUnicorns() // Refresh to get correct state
+      }
     } catch (err) {
       console.error('Error removing unicorn:', err)
       setError('Failed to remove unicorn')

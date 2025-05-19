@@ -21,24 +21,37 @@ export async function GET() {
       )
     }
 
+    console.log('Fetching user data for:', session.user.email)
+
     const user = await prisma.user.findUnique({
       where: { email: session.user.email }
     })
 
     if (!user) {
-      const user = await prisma.user.upsert({
-        where: { email: session.user.email },
-        update: {},
-        create: {
+      console.log('User not found, creating new user')
+      const newUser = await prisma.user.create({
+        data: {
           email: session.user.email,
           name: session.user.name,
           image: session.user.image,
+          SavedUnicorns: '[]'
         },
       })
-      return NextResponse.json(user)
+      console.log('Created new user:', newUser)
+      return NextResponse.json({ 
+        savedUnicorns: [],
+        user: newUser
+      })
     }
 
-    return NextResponse.json(user)
+    console.log('Found existing user:', user)
+    const savedUnicorns = user.SavedUnicorns ? JSON.parse(user.SavedUnicorns) : []
+    console.log('Parsed saved unicorns:', savedUnicorns)
+
+    return NextResponse.json({ 
+      savedUnicorns,
+      user
+    })
   } catch (error) {
     console.error('Error getting user data:', error)
     return NextResponse.json(
@@ -69,6 +82,8 @@ export async function POST(request: Request) {
       }, { status: 400 })
     }
 
+    console.log('Saving unicorns for user:', session.user.email, 'Data:', savedUnicorns)
+
     const user = await prisma.user.upsert({
       where: { email: session.user.email },
       update: {
@@ -81,10 +96,14 @@ export async function POST(request: Request) {
       }
     })
 
+    console.log('Updated user:', user)
+    const parsedUnicorns = JSON.parse(user.SavedUnicorns || '[]')
+    console.log('Parsed saved unicorns:', parsedUnicorns)
+
     return NextResponse.json({ 
       success: true, 
-      user,
-      savedUnicorns: JSON.parse(user.SavedUnicorns || '[]')
+      savedUnicorns: parsedUnicorns,
+      user
     })
   } catch (error) {
     console.error('Error saving unicorns:', error)
