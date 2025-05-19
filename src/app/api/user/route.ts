@@ -1,22 +1,24 @@
 import { NextResponse } from 'next/server'
-import { PrismaClient } from '@/generated/prisma'
 import { getServerSession } from 'next-auth'
 import { GET as authOptions } from '../auth/[...nextauth]/route'
 import { Session } from 'next-auth'
-
-const prisma = new PrismaClient()
+import { prisma } from '@/lib/prisma'
 
 export async function GET() {
   try {
     const session = await getServerSession(authOptions) as Session & {
-      user?: {
-        email?: string;
-        name?: string;
-      };
+      user: {
+        email: string
+        name: string
+        image: string
+      }
     }
-    
+
     if (!session?.user?.email) {
-      return NextResponse.json({ error: 'Not authenticated' }, { status: 401 })
+      return NextResponse.json(
+        { error: 'Not authenticated' },
+        { status: 401 }
+      )
     }
 
     const user = await prisma.user.findUnique({
@@ -24,14 +26,25 @@ export async function GET() {
     })
 
     if (!user) {
-      return NextResponse.json({ savedUnicorns: [] })
+      const user = await prisma.user.upsert({
+        where: { email: session.user.email },
+        update: {},
+        create: {
+          email: session.user.email,
+          name: session.user.name,
+          image: session.user.image,
+        },
+      })
+      return NextResponse.json(user)
     }
 
-    const savedUnicorns = JSON.parse(user.SavedUnicorns || '[]')
-    return NextResponse.json({ savedUnicorns })
+    return NextResponse.json(user)
   } catch (error) {
     console.error('Error getting user data:', error)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    )
   }
 }
 
