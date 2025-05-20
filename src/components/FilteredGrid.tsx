@@ -30,6 +30,7 @@ import { Label } from '@/components/ui/label'
 import { Switch } from "@/components/ui/switch"
 import { useUnicorn } from '@/contexts/UnicornContext'
 import { useFilter } from '@/contexts/FilterContext'
+import { useUnicorns } from '@/contexts/UnicornsContext'
 
 interface Unicorn {
   City: string;
@@ -233,6 +234,8 @@ const gradientAnimation = `
 `;
 
 export default function FilteredGrid() {
+  console.log('🎨 FilteredGrid component rendering...')
+  
   // State for open/closed popovers
   const [cityOpen, setCityOpen] = useState(false)
   const [industryOpen, setIndustryOpen] = useState(false)
@@ -249,77 +252,26 @@ export default function FilteredGrid() {
     clearAllFilters
   } = useFilter()
 
-  // State for unicorns data
-  const [allUnicorns, setAllUnicorns] = useState<Unicorn[]>([])
-  const [isLoading, setIsLoading] = useState(true)
-  const [isDataReady, setIsDataReady] = useState(false)
-
-  // State for filter options
-  const [cityOptions, setCityOptions] = useState<FilterOption[]>([])
-  const [industryOptions, setIndustryOptions] = useState<FilterOption[]>([])
-  const [investorOptions, setInvestorOptions] = useState<FilterOption[]>([])
+  // Get unicorns data from context
+  const { 
+    allUnicorns,
+    isLoading,
+    isDataReady,
+    cityOptions,
+    industryOptions,
+    investorOptions
+  } = useUnicorns()
 
   const [showContent, setShowContent] = useState(false)
   const { savedUnicorns, showFavorites, setShowFavorites } = useUnicorn()
 
-  // Fetch unicorns data on component mount
+  // Show content when data is ready
   useEffect(() => {
-    const loadData = async () => {
-      // If we already have data, don't reload
-      if (allUnicorns.length > 0) {
-        setIsLoading(false);
-        setIsDataReady(true);
-        setShowContent(true);
-        return;
-      }
-
-      try {
-        const response = await fetch('/api/unicorns?limit=500');
-        if (!response.ok) {
-          throw new Error('Failed to fetch unicorns');
-        }
-        const data = await response.json();
-        
-        if (!data.unicorns) {
-          throw new Error('Invalid response format');
-        }
-        
-        // Set all unicorns data
-        setAllUnicorns(data.unicorns);
-        
-        // Extract unique values for each filter
-        const cities = new Set<string>();
-        const industries = new Set<string>();
-        const investors = new Set<string>();
-
-        data.unicorns.forEach((unicorn: Unicorn) => {
-          if (unicorn.City) cities.add(unicorn.City);
-          if (unicorn.Industry) industries.add(unicorn.Industry);
-          if (unicorn['Select Investors']) {
-            unicorn['Select Investors'].split(', ').forEach(investor => investors.add(investor));
-          }
-        });
-
-        // Create and set filter options
-        const cityOpts = Array.from(cities).sort().map(city => ({ label: city, value: city }));
-        const industryOpts = Array.from(industries).sort().map(industry => ({ label: industry, value: industry }));
-        const investorOpts = Array.from(investors).sort().map(investor => ({ label: investor, value: investor }));
-
-        setCityOptions(cityOpts);
-        setIndustryOptions(industryOpts);
-        setInvestorOptions(investorOpts);
-
-        setIsLoading(false);
-        setIsDataReady(true);
-        setShowContent(true);
-      } catch (error) {
-        console.error('Error loading unicorns:', error);
-        setIsLoading(false);
-      }
-    };
-
-    loadData();
-  }, []);
+    if (isDataReady) {
+      console.log('🎯 FilteredGrid: Data is ready, showing content')
+      setShowContent(true)
+    }
+  }, [isDataReady])
 
   // Filter unicorns based on selected filters and favorites
   const filteredUnicorns = allUnicorns.filter(unicorn => {
@@ -422,15 +374,17 @@ export default function FilteredGrid() {
   }, []);
 
   if (isLoading) {
-    return <div className="min-h-[400px] bg-white" />;
+    console.log('⏳ FilteredGrid: Still loading...')
+    return <div className="min-h-[400px] bg-white" />
   }
 
   if (!isDataReady || allUnicorns.length === 0) {
+    console.log('❌ FilteredGrid: No data available')
     return (
       <div className="text-center py-8">
         <p className="text-gray-500">No data available.</p>
       </div>
-    );
+    )
   }
 
   return (

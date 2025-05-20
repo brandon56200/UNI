@@ -4,6 +4,10 @@ import { UnicornProvider } from '@/contexts/UnicornContext'
 import { FilterProvider } from '@/contexts/FilterContext'
 import { Inter } from 'next/font/google'
 import Providers from '@/components/Providers'
+import { UnicornsProvider } from '@/contexts/UnicornsContext'
+import { ThemeProvider } from '@/components/ui/use-theme'
+import { cn } from '@/lib/utils'
+import { fontSans } from '@/lib/fonts'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -21,16 +25,18 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className="h-screen w-screen overflow-hidden">
+    <html lang="en" className="h-screen w-screen overflow-hidden" suppressHydrationWarning>
       <body className={inter.className}>
         <Providers>
-          <UnicornProvider>
-            <FilterProvider>
-              <div className="w-full h-full overflow-hidden">
-                {children}
-              </div>
-            </FilterProvider>
-          </UnicornProvider>
+          <UnicornsProvider>
+            <UnicornProvider>
+              <FilterProvider>
+                <div className="w-full h-full overflow-hidden">
+                  {children}
+                </div>
+              </FilterProvider>
+            </UnicornProvider>
+          </UnicornsProvider>
         </Providers>
       </body>
     </html>
