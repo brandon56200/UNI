@@ -104,11 +104,11 @@ export default function Header({ onHomeClick, onAnimationComplete }: HeaderProps
           checkAllAnimationsComplete();
         }}
       >
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="flex h-16 items-center justify-between">
+        <div className="mx-auto max-w-7xl xl:max-w-7xl 2xl:max-w-[2560px] px-4 sm:px-6 lg:px-8">
+          <div className="flex h-16 sm:h-16 md:h-16 lg:h-16 xl:h-16 2xl:h-32 items-center justify-between">
             <div className="flex items-center">
               <motion.div 
-                className="text-3xl font-bold text-gray-900 select-none"
+                className="text-2xl sm:text-2xl md:text-2xl lg:text-2xl xl:text-3xl 2xl:text-6xl font-bold text-gray-900 select-none"
                 variants={itemVariants}
                 onAnimationComplete={() => {
                   animationElementsRef.current.logo = true;
@@ -120,12 +120,12 @@ export default function Header({ onHomeClick, onAnimationComplete }: HeaderProps
             </div>
             
             <motion.nav 
-              className="flex items-center space-x-8"
+              className="flex items-center space-x-4 sm:space-x-5 md:space-x-6 lg:space-x-6 xl:space-x-7 2xl:space-x-12"
               variants={childrenVariants}
             >
               <motion.button 
                 onClick={handleHomeClick}
-                className={`text-gray-600 hover:text-gray-900 transition-colors ${currentPage === 'home' ? 'font-semibold' : ''}`}
+                className={`text-sm sm:text-base md:text-base lg:text-base xl:text-lg 2xl:text-4xl text-gray-600 hover:text-gray-900 transition-colors ${currentPage === 'home' ? 'font-semibold' : ''}`}
                 variants={itemVariants}
                 onAnimationComplete={() => {
                   animationElementsRef.current.navItems[0] = true;
@@ -136,7 +136,7 @@ export default function Header({ onHomeClick, onAnimationComplete }: HeaderProps
               </motion.button>
               <motion.button 
                 onClick={handleAboutClick}
-                className={`text-gray-600 hover:text-gray-900 transition-colors ${currentPage === 'about' ? 'font-semibold' : ''}`}
+                className={`text-sm sm:text-base md:text-base lg:text-base xl:text-lg 2xl:text-4xl text-gray-600 hover:text-gray-900 transition-colors ${currentPage === 'about' ? 'font-semibold' : ''}`}
                 variants={itemVariants}
                 onAnimationComplete={() => {
                   animationElementsRef.current.navItems[1] = true;
@@ -147,7 +147,7 @@ export default function Header({ onHomeClick, onAnimationComplete }: HeaderProps
               </motion.button>
               <motion.button 
                 onClick={handleContactClick}
-                className={`text-gray-600 hover:text-gray-900 transition-colors ${currentPage === 'contact' ? 'font-semibold' : ''}`}
+                className={`text-sm sm:text-base md:text-base lg:text-base xl:text-lg 2xl:text-4xl text-gray-600 hover:text-gray-900 transition-colors ${currentPage === 'contact' ? 'font-semibold' : ''}`}
                 variants={itemVariants}
                 onAnimationComplete={() => {
                   animationElementsRef.current.navItems[2] = true;
@@ -162,6 +162,7 @@ export default function Header({ onHomeClick, onAnimationComplete }: HeaderProps
                   animationElementsRef.current.navItems[3] = true;
                   checkAllAnimationsComplete();
                 }}
+                className="scale-100 sm:scale-100 md:scale-100 lg:scale-100 xl:scale-100 2xl:scale-200 ml-4 sm:ml-5 md:ml-6 lg:ml-6 xl:ml-7 2xl:ml-20"
               >
                 <LoginButton />
               </motion.div>

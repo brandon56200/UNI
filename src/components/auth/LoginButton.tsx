@@ -8,20 +8,12 @@ import AuthModal from "./AuthModal"
 
 export default function LoginButton() {
   const { data: session, status } = useSession()
-  const { savedUnicorns, isLoading } = useUnicorn()
+  const { savedUnicorns } = useUnicorn()
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false)
 
   const handleSignIn = () => {
     setIsAuthModalOpen(true)
     signIn("google", { callbackUrl: window.location.href, redirect: false })
-  }
-
-  if (status === "loading" || isLoading) {
-    return (
-      <button className="px-3 py-1.5 text-sm rounded-lg bg-neutral-950 text-neutral-50">
-        Loading...
-      </button>
-    )
   }
 
   if (session?.user?.image) {
@@ -48,16 +40,12 @@ export default function LoginButton() {
   return (
     <>
       <button
-        onClick={handleSignIn}
-        className="px-3 py-1.5 text-sm rounded-lg bg-neutral-950 text-neutral-50 hover:bg-neutral-900 transition-colors"
+        onClick={() => setIsAuthModalOpen(true)}
+        className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2"
       >
-        Sign In
+        Sign in
       </button>
-      
-      <AuthModal 
-        isOpen={isAuthModalOpen} 
-        onClose={() => setIsAuthModalOpen(false)} 
-      />
+      <AuthModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} />
     </>
   )
 } 

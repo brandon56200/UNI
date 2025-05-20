@@ -214,7 +214,7 @@ export default function LandingPage() {
           {isGridVisible && (
             <motion.div
               key="filtered-grid"
-              className="w-4/5 absolute inset-0 m-auto flex items-center justify-center h-full mt-10 overflow-hidden"
+              className="w-4/5 xl:w-4/5 2xl:w-[85%] absolute inset-0 m-auto flex items-center justify-center h-full mt-10 overflow-hidden"
               initial={{ opacity: 0, y: 100 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 100 }}
