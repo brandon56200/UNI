@@ -5,9 +5,6 @@ import { FilterProvider } from '@/contexts/FilterContext'
 import { Inter } from 'next/font/google'
 import Providers from '@/components/Providers'
 import { UnicornsProvider } from '@/contexts/UnicornsContext'
-import { ThemeProvider } from '@/components/ui/use-theme'
-import { cn } from '@/lib/utils'
-import { fontSans } from '@/lib/fonts'
 
 const inter = Inter({ subsets: ['latin'] })
 
