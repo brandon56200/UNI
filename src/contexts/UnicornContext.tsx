@@ -30,8 +30,8 @@ export function UnicornProvider({ children }: { children: ReactNode }) {
       return
     }
     
-    setIsLoading(true)
-    setError(null)
+      setIsLoading(true)
+      setError(null)
     try {
       console.log('Refreshing unicorns for user:', session.user.email)
       const response = await fetch('/api/user')
@@ -41,7 +41,7 @@ export function UnicornProvider({ children }: { children: ReactNode }) {
       const data = await response.json()
       console.log('Received saved unicorns:', data)
       if (data.savedUnicorns) {
-        setSavedUnicorns(data.savedUnicorns)
+      setSavedUnicorns(data.savedUnicorns)
       } else {
         console.error('No savedUnicorns in response:', data)
         setSavedUnicorns([])

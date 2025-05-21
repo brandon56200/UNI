@@ -197,9 +197,9 @@ export default function AbstractCanvas({ isScrolling = false, onPrerender }: Abs
         />
         
         <Suspense fallback={null}>
-          {/* Environment lighting for better reflections */}
+        {/* Environment lighting for better reflections */}
           <Environment files="/potsdamer_platz_1k.hdr" />
-          <AbstractModel isScrolling={isScrolling} />
+        <AbstractModel isScrolling={isScrolling} />
         </Suspense>
       </Canvas>
     </div>

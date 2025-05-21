@@ -156,8 +156,8 @@ const UnicornCard = ({ unicorn }: { unicorn: Unicorn }) => {
 
   return (
     <div className="relative p-[2px] rounded-lg overflow-hidden bg-gradient-to-br from-pink-500 via-purple-500 to-indigo-600 animate-gradient shadow-lg h-[220px] xl:h-[220px] 2xl:h-[255px] 3xl:h-[285px] 4xl:h-[320px] 5xl:h-[360px] 6xl:h-[400px]">
-      <div className="absolute inset-0 bg-gradient-to-br from-pink-500 via-purple-500 to-indigo-600 animate-gradient"></div>
-      <Card className="h-full flex flex-col relative bg-white z-10 border-none shadow-md rounded-lg">
+    <div className="absolute inset-0 bg-gradient-to-br from-pink-500 via-purple-500 to-indigo-600 animate-gradient"></div>
+    <Card className="h-full flex flex-col relative bg-white z-10 border-none shadow-md rounded-lg">
         <CardHeader className="pb-0 pt-0 relative">
           <div className="flex items-center justify-between">
             <CardTitle className="text-base xl:text-base 2xl:text-lg 3xl:text-xl 4xl:text-2xl 5xl:text-3xl 6xl:text-4xl font-semibold line-clamp-1 mb-0" style={{ fontFamily: 'var(--font-geist-sans)' }}>{unicorn.Company || 'Unnamed Company'}</CardTitle>
@@ -183,7 +183,7 @@ const UnicornCard = ({ unicorn }: { unicorn: Unicorn }) => {
               </div>
             </Button>
           </div>
-        </CardHeader>
+      </CardHeader>
         <CardContent className="flex-grow overflow-hidden -mt-4">
           <div className="space-y-0.5 text-xs xl:text-xs 2xl:text-sm 3xl:text-base 4xl:text-lg 5xl:text-xl 6xl:text-2xl text-gray-500 h-[160px] xl:h-[160px] 2xl:h-[190px] 3xl:h-[215px] 4xl:h-[250px] 5xl:h-[290px] 6xl:h-[330px] overflow-y-auto">
             <p><span className="font-bold">Founded:</span> {new Date(unicorn['Date Joined']).getFullYear() || 'N/A'}</p>
@@ -195,9 +195,9 @@ const UnicornCard = ({ unicorn }: { unicorn: Unicorn }) => {
               <p><span className="font-bold">Investors:</span> {unicorn['Select Investors']}</p>
             )}
           </div>
-        </CardContent>
-      </Card>
-    </div>
+      </CardContent>
+    </Card>
+  </div>
   );
 };
 
@@ -347,14 +347,14 @@ export default function FilteredGrid() {
   return (
     <AnimatePresence mode="wait">
       {showContent && (
-        <motion.div
+      <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.3 }}
-          className="w-full px-4 pt-6 pb-6 flex flex-col items-center justify-center min-h-[calc(100vh-4rem)] xl:min-h-[calc(100vh-4rem)] 2xl:min-h-[calc(100vh-8rem)] 2xl:mt-0 max-w-7xl xl:max-w-7xl 2xl:max-w-[85%] translate-y-[-2.5%] xl:translate-y-[-2.5%] 2xl:translate-y-[-2.5%] 3xl:translate-y-[-2.5%] 4xl:translate-y-[-2.5%] 5xl:translate-y-[-2.5%] 6xl:translate-y-[-2.5%]"
+          className="w-full px-4 pt-6 pb-6 flex flex-col items-center justify-start min-h-[calc(100vh-4rem)] xl:min-h-[calc(100vh-4rem)] 2xl:min-h-[calc(100vh-8rem)] 2xl:mt-0 max-w-7xl xl:max-w-7xl 2xl:max-w-[85%] translate-y-[-2.5%] xl:translate-y-[-2.5%] 2xl:translate-y-[-2.5%] 3xl:translate-y-[-2.5%] 4xl:translate-y-[-2.5%] 5xl:translate-y-[-2.5%] 6xl:translate-y-[-2.5%] mt-4 xl:mt-6 2xl:mt-4 3xl:mt-6 4xl:mt-8 5xl:mt-10 6xl:mt-12"
         >
-          <motion.div
+        <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
@@ -379,34 +379,34 @@ export default function FilteredGrid() {
             <div className="flex flex-wrap items-center gap-4 xl:gap-4 2xl:gap-6 3xl:gap-8 4xl:gap-10 5xl:gap-12 6xl:gap-14">
               <div className="flex items-center gap-1 xl:gap-2 2xl:gap-3 3xl:gap-4 4xl:gap-5 5xl:gap-6 6xl:gap-7">
                 <Label className="text-sm xl:text-sm 2xl:text-base 3xl:text-lg 4xl:text-xl 5xl:text-2xl 6xl:text-3xl font-medium text-gray-700 whitespace-nowrap">City:</Label>
-                <MultiSelect
+              <MultiSelect
                   options={cityOptions}
-                  selectedValues={selectedCities}
-                  onSelect={handleCitySelect}
-                  isOpen={cityOpen}
-                  setIsOpen={setCityOpen}
+                selectedValues={selectedCities}
+                onSelect={handleCitySelect}
+                isOpen={cityOpen}
+                setIsOpen={setCityOpen}
                   placeholder="Select cities..."
-                />
-              </div>
+              />
+            </div>
               <div className="flex items-center gap-1 xl:gap-2 2xl:gap-3 3xl:gap-4 4xl:gap-5 5xl:gap-6 6xl:gap-7">
                 <Label className="text-sm xl:text-sm 2xl:text-base 3xl:text-lg 4xl:text-xl 5xl:text-2xl 6xl:text-3xl font-medium text-gray-700 whitespace-nowrap">Industry:</Label>
-                <MultiSelect
+              <MultiSelect
                   options={industryOptions}
-                  selectedValues={selectedIndustries}
-                  onSelect={handleIndustrySelect}
-                  isOpen={industryOpen}
-                  setIsOpen={setIndustryOpen}
+                selectedValues={selectedIndustries}
+                onSelect={handleIndustrySelect}
+                isOpen={industryOpen}
+                setIsOpen={setIndustryOpen}
                   placeholder="Select industries..."
-                />
-              </div>
+              />
+            </div>
               <div className="flex items-center gap-1 xl:gap-2 2xl:gap-3 3xl:gap-4 4xl:gap-5 5xl:gap-6 6xl:gap-7">
                 <Label className="text-sm xl:text-sm 2xl:text-base 3xl:text-lg 4xl:text-xl 5xl:text-2xl 6xl:text-3xl font-medium text-gray-700 whitespace-nowrap">Investors:</Label>
-                <MultiSelect
+              <MultiSelect
                   options={investorOptions}
-                  selectedValues={selectedInvestors}
-                  onSelect={handleInvestorSelect}
-                  isOpen={investorOpen}
-                  setIsOpen={setInvestorOpen}
+                selectedValues={selectedInvestors}
+                onSelect={handleInvestorSelect}
+                isOpen={investorOpen}
+                setIsOpen={setInvestorOpen}
                   placeholder="Select investors..."
                 />
               </div>
@@ -427,7 +427,7 @@ export default function FilteredGrid() {
           </motion.div>
 
           {filteredUnicorns.length > 0 ? (
-            <motion.div
+        <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
@@ -461,15 +461,19 @@ export default function FilteredGrid() {
                               <UnicornCard unicorn={unicorn} />
                             </motion.div>
                           ))}
-                        </div>
+                      </div>
                       </AnimatePresence>
                     </CarouselItem>
                   ))}
                 </CarouselContent>
-                <div className="flex items-center justify-center mt-8 xl:mt-16 2xl:mt-16">
+                <motion.div 
+                  layout
+                  transition={{ duration: 0.6, ease: "easeInOut" }}
+                  className="flex items-center justify-center mt-8 xl:mt-16 2xl:mt-16"
+                >
                   <CarouselPrevious className="relative static mr-8 xl:mr-12 2xl:mr-16 xl:scale-110 2xl:scale-125 3xl:scale-150 4xl:scale-175 5xl:scale-200 6xl:scale-225 hover:bg-black hover:text-white transition-colors duration-300" />
                   <CarouselNext className="relative static ml-8 xl:ml-12 2xl:ml-16 xl:scale-110 2xl:scale-125 3xl:scale-150 4xl:scale-175 5xl:scale-200 6xl:scale-225 hover:bg-black hover:text-white transition-colors duration-300" />
-                </div>
+                </motion.div>
               </Carousel>
             </motion.div>
           ) : (
@@ -506,10 +510,10 @@ export default function FilteredGrid() {
             </div>
             <div className="hidden 4xl:block 5xl:hidden">
               <div className="w-10 h-10 rounded-full bg-pink-500 flex items-center justify-center text-white font-bold p-2">4XL</div>
-            </div>
+          </div>
             <div className="hidden 5xl:block 6xl:hidden">
               <div className="w-10 h-10 rounded-full bg-indigo-500 flex items-center justify-center text-white font-bold p-2">5XL</div>
-            </div>
+                      </div>
             <div className="hidden 6xl:block">
               <div className="w-10 h-10 rounded-full bg-cyan-500 flex items-center justify-center text-white font-bold p-2">6XL</div>
             </div>

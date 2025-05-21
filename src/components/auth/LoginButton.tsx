@@ -85,10 +85,10 @@ export default function LoginButton({ onSignIn, onRedirectingChange }: LoginButt
     <motion.button
       whileHover={{ scale: 1.05 }}
       whileTap={{ scale: 0.95 }}
-      onClick={handleSignIn}
+        onClick={handleSignIn}
       className="px-3 py-1.5 bg-neutral-950 text-white rounded-lg hover:bg-neutral-800 transition-colors text-sm"
-    >
-      Sign In
+      >
+        Sign In
     </motion.button>
   )
 } 
