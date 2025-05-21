@@ -513,37 +513,6 @@ export default function FilteredGrid() {
               <p className="text-gray-500 xl:text-lg 2xl:text-2xl">No unicorns found matching the selected filters.</p>
             </motion.div>
           )}
-
-          {/* Debug Screen Size Indicator */}
-          <div className="fixed bottom-4 right-4 z-50">
-            <div className="hidden sm:block md:hidden">
-              <div className="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold p-2">S</div>
-            </div>
-            <div className="hidden md:block lg:hidden">
-              <div className="w-10 h-10 rounded-full bg-green-500 flex items-center justify-center text-white font-bold p-2">M</div>
-            </div>
-            <div className="hidden lg:block xl:hidden">
-              <div className="w-10 h-10 rounded-full bg-yellow-500 flex items-center justify-center text-white font-bold p-2">L</div>
-            </div>
-            <div className="hidden xl:block 2xl:hidden">
-              <div className="w-10 h-10 rounded-full bg-orange-500 flex items-center justify-center text-white font-bold p-2">XL</div>
-            </div>
-            <div className="hidden 2xl:block 3xl:hidden">
-              <div className="w-10 h-10 rounded-full bg-red-500 flex items-center justify-center text-white font-bold p-2">2XL</div>
-            </div>
-            <div className="hidden 3xl:block 4xl:hidden">
-              <div className="w-10 h-10 rounded-full bg-purple-500 flex items-center justify-center text-white font-bold p-2">3XL</div>
-            </div>
-            <div className="hidden 4xl:block 5xl:hidden">
-              <div className="w-10 h-10 rounded-full bg-pink-500 flex items-center justify-center text-white font-bold p-2">4XL</div>
-          </div>
-            <div className="hidden 5xl:block 6xl:hidden">
-              <div className="w-10 h-10 rounded-full bg-indigo-500 flex items-center justify-center text-white font-bold p-2">5XL</div>
-                      </div>
-            <div className="hidden 6xl:block">
-              <div className="w-10 h-10 rounded-full bg-cyan-500 flex items-center justify-center text-white font-bold p-2">6XL</div>
-            </div>
-          </div>
         </motion.div>
       )}
     </AnimatePresence>

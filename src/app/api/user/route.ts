@@ -13,7 +13,7 @@ export async function GET() {
         image: string
       }
     }
-
+    
     if (!session?.user?.email) {
       return NextResponse.json(
         { error: 'Not authenticated' },
