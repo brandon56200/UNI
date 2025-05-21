@@ -201,6 +201,30 @@ const UnicornCard = ({ unicorn }: { unicorn: Unicorn }) => {
   );
 };
 
+// Custom hook for responsive card count
+const useCardCount = () => {
+  const [cardCount, setCardCount] = useState(6);
+
+  useEffect(() => {
+    const updateCardCount = () => {
+      const height = window.innerHeight;
+      if (height >= 2300) {
+        setCardCount(12); // 3x4 grid
+      } else if (height >= 1920) {
+        setCardCount(9); // 3x3 grid
+      } else {
+        setCardCount(6); // 3x2 grid
+      }
+    };
+
+    updateCardCount();
+    window.addEventListener('resize', updateCardCount);
+    return () => window.removeEventListener('resize', updateCardCount);
+  }, []);
+
+  return cardCount;
+};
+
 export default function FilteredGrid() {
   console.log('🎨 FilteredGrid component rendering...')
   
@@ -330,6 +354,8 @@ export default function FilteredGrid() {
     setShowFavorites(false)
   }
 
+  const cardCount = useCardCount();
+
   if (isLoading) {
     console.log('⏳ FilteredGrid: Still loading...')
     return <div className="min-h-[400px] bg-white" />
@@ -442,13 +468,13 @@ export default function FilteredGrid() {
                 className="w-full"
               >
                 <CarouselContent className="-ml-4">
-                  {Array.from({ length: Math.ceil(filteredUnicorns.length / 6) }).map((_, pageIndex) => (
+                  {Array.from({ length: Math.ceil(filteredUnicorns.length / cardCount) }).map((_, pageIndex) => (
                     <CarouselItem key={pageIndex} className="pl-4 basis-full">
                       <AnimatePresence mode="wait">
                         <div className="grid grid-cols-3 gap-4 xl:gap-6 2xl:gap-8">
                           {filteredUnicorns.slice(
-                            pageIndex * 6,
-                            (pageIndex + 1) * 6
+                            pageIndex * cardCount,
+                            (pageIndex + 1) * cardCount
                           ).map((unicorn, index) => (
                             <motion.div
                               key={`${unicorn.City}-${index}`}
@@ -461,7 +487,7 @@ export default function FilteredGrid() {
                               <UnicornCard unicorn={unicorn} />
                             </motion.div>
                           ))}
-                      </div>
+                        </div>
                       </AnimatePresence>
                     </CarouselItem>
                   ))}

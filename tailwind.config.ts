@@ -31,6 +31,15 @@ const config = {
         '5xl': '3440px',    // Ultra-wide 2K
         '6xl': '3840px',    // 4K
       },
+      height: {
+        'screen-sm': '640px',
+        'screen-md': '768px',
+        'screen-lg': '1024px',
+        'screen-xl': '1280px',
+        'screen-2xl': '1536px',
+        'screen-3xl': '1920px',
+        'screen-4xl': '2300px',
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
