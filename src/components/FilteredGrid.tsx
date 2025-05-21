@@ -103,31 +103,31 @@ const MultiSelect = ({
           variant="outline"
           role="combobox"
           aria-expanded={isOpen}
-          className="justify-between w-[170px] xl:w-[200px] 2xl:w-[300px] border-neutral-950 text-neutral-950 hover:bg-gray-100 transition-colors"
+          className="justify-between w-[170px] xl:w-[200px] 2xl:w-[250px] 3xl:w-[300px] 4xl:w-[350px] 5xl:w-[400px] 6xl:w-[450px] border-neutral-950 text-neutral-950 hover:bg-gray-100 transition-colors"
         >
-          <span className="truncate max-w-[120px] xl:max-w-[150px] 2xl:max-w-[250px] mr-2 overflow-hidden">
+          <span className="truncate max-w-[120px] xl:max-w-[150px] 2xl:max-w-[200px] 3xl:max-w-[250px] 4xl:max-w-[300px] 5xl:max-w-[350px] 6xl:max-w-[400px] mr-2 overflow-hidden">
             {getSelectedLabels(options, selectedValues)}
           </span>
-          <ChevronsUpDown className="ml-auto h-4 w-4 xl:h-5 xl:w-5 2xl:h-6 2xl:w-6 shrink-0 opacity-50" />
+          <ChevronsUpDown className="ml-auto h-4 w-4 xl:h-5 xl:w-5 2xl:h-6 2xl:w-6 3xl:h-7 3xl:w-7 4xl:h-8 4xl:w-8 5xl:h-9 5xl:w-9 6xl:h-10 6xl:w-10 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[200px] xl:w-[250px] 2xl:w-[350px] p-0 bg-neutral-950 shadow-md border-0 rounded-md text-neutral-50">
+      <PopoverContent className="w-[200px] xl:w-[250px] 2xl:w-[300px] 3xl:w-[350px] 4xl:w-[400px] 5xl:w-[450px] 6xl:w-[500px] p-0 bg-neutral-950 shadow-md border-0 rounded-md text-neutral-50">
         <Command className="rounded-md bg-neutral-950">
-          <CommandInput placeholder={placeholder} className="rounded-t-md text-neutral-50 xl:text-lg 2xl:text-xl" />
-          <CommandEmpty className="text-neutral-50 xl:text-lg 2xl:text-xl">No results found.</CommandEmpty>
-          <CommandGroup className="max-h-[300px] xl:max-h-[400px] 2xl:max-h-[500px] overflow-y-auto">
+          <CommandInput placeholder={placeholder} className="rounded-t-md text-neutral-50 xl:text-lg 2xl:text-xl 3xl:text-2xl 4xl:text-3xl 5xl:text-4xl 6xl:text-5xl" />
+          <CommandEmpty className="text-neutral-50 xl:text-lg 2xl:text-xl 3xl:text-2xl 4xl:text-3xl 5xl:text-4xl 6xl:text-5xl">No results found.</CommandEmpty>
+          <CommandGroup className="max-h-[300px] xl:max-h-[400px] 2xl:max-h-[500px] 3xl:max-h-[600px] 4xl:max-h-[700px] 5xl:max-h-[800px] 6xl:max-h-[900px] overflow-y-auto">
             {options.map((option) => (
               <CommandItem
                 key={option.value}
                 onSelect={() => onSelect(option.value)}
-                className="flex items-center p-2 xl:p-3 2xl:p-4 cursor-pointer text-neutral-50 hover:bg-neutral-900"
+                className="flex items-center p-2 xl:p-3 2xl:p-4 3xl:p-5 4xl:p-6 5xl:p-7 6xl:p-8 cursor-pointer text-neutral-50 hover:bg-neutral-900"
               >
                 <div className="flex items-center gap-2 w-full">
                   <Checkbox 
                     checked={selectedValues.includes(option.value)} 
-                    className="border-neutral-50 data-[state=checked]:bg-white data-[state=checked]:text-neutral-950 xl:scale-110 2xl:scale-125"
+                    className="border-neutral-50 data-[state=checked]:bg-white data-[state=checked]:text-neutral-950 xl:scale-110 2xl:scale-125 3xl:scale-150 4xl:scale-175 5xl:scale-200 6xl:scale-225"
                   />
-                  <span className="ml-2 flex-grow xl:text-lg 2xl:text-xl">{option.label}</span>
+                  <span className="ml-2 flex-grow xl:text-lg 2xl:text-xl 3xl:text-2xl 4xl:text-3xl 5xl:text-4xl 6xl:text-5xl">{option.label}</span>
                 </div>
               </CommandItem>
             ))}
@@ -155,25 +155,25 @@ const UnicornCard = ({ unicorn }: { unicorn: Unicorn }) => {
   };
 
   return (
-    <div className="relative p-[2px] rounded-lg overflow-hidden bg-gradient-to-br from-pink-500 via-purple-500 to-indigo-600 animate-gradient shadow-lg h-[220px] xl:h-[220px] 2xl:h-[350px]">
+    <div className="relative p-[2px] rounded-lg overflow-hidden bg-gradient-to-br from-pink-500 via-purple-500 to-indigo-600 animate-gradient shadow-lg h-[220px] xl:h-[220px] 2xl:h-[255px] 3xl:h-[285px] 4xl:h-[320px] 5xl:h-[360px] 6xl:h-[400px]">
       <div className="absolute inset-0 bg-gradient-to-br from-pink-500 via-purple-500 to-indigo-600 animate-gradient"></div>
       <Card className="h-full flex flex-col relative bg-white z-10 border-none shadow-md rounded-lg">
         <CardHeader className="pb-0 pt-0 relative">
           <div className="flex items-center justify-between">
-            <CardTitle className="text-base xl:text-base 2xl:text-2xl font-semibold line-clamp-1 mb-0" style={{ fontFamily: 'var(--font-geist-sans)' }}>{unicorn.Company || 'Unnamed Company'}</CardTitle>
+            <CardTitle className="text-base xl:text-base 2xl:text-lg 3xl:text-xl 4xl:text-2xl 5xl:text-3xl 6xl:text-4xl font-semibold line-clamp-1 mb-0" style={{ fontFamily: 'var(--font-geist-sans)' }}>{unicorn.Company || 'Unnamed Company'}</CardTitle>
             <Button
               variant="ghost"
               size="icon"
-              className="p-0 h-8 w-8 xl:h-8 xl:w-8 2xl:h-20 2xl:w-20 hover:bg-transparent"
+              className="p-0 h-8 w-8 xl:h-8 xl:w-8 2xl:h-10 2xl:w-10 3xl:h-12 3xl:w-12 4xl:h-14 4xl:w-14 5xl:h-16 5xl:w-16 6xl:h-18 6xl:w-18 hover:bg-transparent"
               onClick={handleBookmarkClick}
             >
               <div className={cn(
-                "relative rounded-full p-[2px] xl:p-[3px] 2xl:p-[12px]",
+                "relative rounded-full p-[2px] xl:p-[3px] 2xl:p-[3px] 3xl:p-[4px] 4xl:p-[5px] 5xl:p-[6px] 6xl:p-[7px]",
                 isSaved && "bg-gradient-to-br from-pink-500 via-purple-500 to-indigo-600 animate-gradient"
               )}>
                 <Bookmark
                   className={cn(
-                    "h-5 w-5 xl:h-5 xl:w-5 2xl:h-16 2xl:w-16 transition-all duration-300 2xl:scale-175",
+                    "h-5 w-5 xl:h-5 xl:w-5 2xl:h-6 2xl:w-6 3xl:h-7 3xl:w-7 4xl:h-8 4xl:w-8 5xl:h-9 5xl:w-9 6xl:h-10 6xl:w-10 transition-all duration-300",
                     isAnimating && "scale-110",
                     isSaved 
                       ? "fill-white stroke-none"
@@ -185,7 +185,7 @@ const UnicornCard = ({ unicorn }: { unicorn: Unicorn }) => {
           </div>
         </CardHeader>
         <CardContent className="flex-grow overflow-hidden -mt-4">
-          <div className="space-y-0.5 text-xs xl:text-xs 2xl:text-base text-gray-500 h-[160px] xl:h-[160px] 2xl:h-[280px] overflow-y-auto">
+          <div className="space-y-0.5 text-xs xl:text-xs 2xl:text-sm 3xl:text-base 4xl:text-lg 5xl:text-xl 6xl:text-2xl text-gray-500 h-[160px] xl:h-[160px] 2xl:h-[190px] 3xl:h-[215px] 4xl:h-[250px] 5xl:h-[290px] 6xl:h-[330px] overflow-y-auto">
             <p><span className="font-bold">Founded:</span> {new Date(unicorn['Date Joined']).getFullYear() || 'N/A'}</p>
             <p><span className="font-bold">Valuation:</span> {unicorn['Valuation ($B)'] ? `$${unicorn['Valuation ($B)']}B` : 'N/A'}</p>
             <p><span className="font-bold">Location:</span> {unicorn.City || 'N/A'}</p>
@@ -200,38 +200,6 @@ const UnicornCard = ({ unicorn }: { unicorn: Unicorn }) => {
     </div>
   );
 };
-
-// Add animation keyframes for the gradient
-const gradientAnimation = `
-@keyframes gradient {
-  0% { background-position: 0% 50%; }
-  25% { background-position: 100% 75%; }
-  50% { background-position: 50% 100%; }
-  75% { background-position: 0% 75%; }
-  100% { background-position: 0% 50%; }
-}
-
-.animate-gradient {
-  background-size: 300% 300%;
-  animation: gradient 4s ease-in-out infinite;
-}
-
-/* Custom carousel styles */
-.carousel-container {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: repeat(2, 1fr);
-  gap: 1rem;
-  height: 650px; /* Adjust based on your card height */
-}
-
-.carousel-content {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: repeat(2, 1fr);
-  gap: 1rem;
-}
-`;
 
 export default function FilteredGrid() {
   console.log('🎨 FilteredGrid component rendering...')
@@ -362,17 +330,6 @@ export default function FilteredGrid() {
     setShowFavorites(false)
   }
 
-  // Add the animation to the document
-  useEffect(() => {
-    const styleSheet = document.createElement("style");
-    styleSheet.innerText = gradientAnimation;
-    document.head.appendChild(styleSheet);
-    
-    return () => {
-      document.head.removeChild(styleSheet);
-    };
-  }, []);
-
   if (isLoading) {
     console.log('⏳ FilteredGrid: Still loading...')
     return <div className="min-h-[400px] bg-white" />
@@ -395,17 +352,17 @@ export default function FilteredGrid() {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.3 }}
-          className="w-full px-4 pt-6 pb-6 flex flex-col items-center justify-start min-h-[calc(100vh-4rem)] xl:min-h-[calc(100vh-4rem)] 2xl:min-h-[calc(100vh-8rem)] 2xl:mt-32 max-w-7xl xl:max-w-7xl 2xl:max-w-[85%]"
+          className="w-full px-4 pt-6 pb-6 flex flex-col items-center justify-center min-h-[calc(100vh-4rem)] xl:min-h-[calc(100vh-4rem)] 2xl:min-h-[calc(100vh-8rem)] 2xl:mt-0 max-w-7xl xl:max-w-7xl 2xl:max-w-[85%] translate-y-[-2.5%] xl:translate-y-[-2.5%] 2xl:translate-y-[-2.5%] 3xl:translate-y-[-2.5%] 4xl:translate-y-[-2.5%] 5xl:translate-y-[-2.5%] 6xl:translate-y-[-2.5%]"
         >
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.4, delay: 0.2 }}
-            className="backdrop-blur-md bg-white/30 rounded-lg shadow-lg p-4 xl:p-5 2xl:p-8 mb-12 border border-white/20 w-full"
+            className="backdrop-blur-md bg-white/30 rounded-lg shadow-lg p-4 xl:p-5 2xl:p-6 3xl:p-7 4xl:p-8 5xl:p-9 6xl:p-10 mb-12 border border-white/20 w-full 2xl:mt-8 3xl:mt-12 4xl:mt-16 5xl:mt-20 6xl:mt-24"
           >
-            <div className="flex items-center justify-between mb-2 xl:mb-3 2xl:mb-6">
-              <h2 className="text-lg xl:text-lg 2xl:text-4xl font-semibold text-gray-900">Filter Unicorns</h2>
+            <div className="flex items-center justify-between mb-2 xl:mb-3 2xl:mb-4 3xl:mb-5 4xl:mb-6 5xl:mb-7 6xl:mb-8">
+              <h2 className="text-lg xl:text-lg 2xl:text-2xl 3xl:text-3xl 4xl:text-4xl 5xl:text-5xl 6xl:text-6xl font-semibold text-gray-900">Filter Unicorns</h2>
               <Button
                 variant="outline"
                 size="sm"
@@ -414,14 +371,14 @@ export default function FilteredGrid() {
                   setShowFavorites(false);
                 }}
                 disabled={selectedCities.length === 0 && selectedIndustries.length === 0 && selectedInvestors.length === 0 && !showFavorites}
-                className="text-xs xl:text-sm 2xl:text-xl bg-neutral-800 hover:bg-neutral-700 text-white border-none disabled:bg-neutral-300 disabled:text-neutral-500 xl:py-2 xl:px-4 2xl:py-6 2xl:px-8"
+                className="text-xs xl:text-sm 2xl:text-base 3xl:text-lg 4xl:text-xl 5xl:text-2xl 6xl:text-3xl bg-neutral-800 hover:bg-neutral-700 text-white border-none disabled:bg-neutral-300 disabled:text-neutral-500 xl:py-2 xl:px-4 2xl:py-2.5 2xl:px-5 3xl:py-3 3xl:px-6 4xl:py-3.5 4xl:px-7 5xl:py-4 5xl:px-8 6xl:py-4.5 6xl:px-9"
               >
                 Clear All
               </Button>
             </div>
-            <div className="flex flex-wrap items-center gap-4 xl:gap-4 2xl:gap-12">
-              <div className="flex items-center gap-1 xl:gap-2 2xl:gap-4">
-                <Label className="text-sm xl:text-sm 2xl:text-2xl font-medium text-gray-700 whitespace-nowrap">City:</Label>
+            <div className="flex flex-wrap items-center gap-4 xl:gap-4 2xl:gap-6 3xl:gap-8 4xl:gap-10 5xl:gap-12 6xl:gap-14">
+              <div className="flex items-center gap-1 xl:gap-2 2xl:gap-3 3xl:gap-4 4xl:gap-5 5xl:gap-6 6xl:gap-7">
+                <Label className="text-sm xl:text-sm 2xl:text-base 3xl:text-lg 4xl:text-xl 5xl:text-2xl 6xl:text-3xl font-medium text-gray-700 whitespace-nowrap">City:</Label>
                 <MultiSelect
                   options={cityOptions}
                   selectedValues={selectedCities}
@@ -431,8 +388,8 @@ export default function FilteredGrid() {
                   placeholder="Select cities..."
                 />
               </div>
-              <div className="flex items-center gap-1 xl:gap-2 2xl:gap-4">
-                <Label className="text-sm xl:text-sm 2xl:text-2xl font-medium text-gray-700 whitespace-nowrap">Industry:</Label>
+              <div className="flex items-center gap-1 xl:gap-2 2xl:gap-3 3xl:gap-4 4xl:gap-5 5xl:gap-6 6xl:gap-7">
+                <Label className="text-sm xl:text-sm 2xl:text-base 3xl:text-lg 4xl:text-xl 5xl:text-2xl 6xl:text-3xl font-medium text-gray-700 whitespace-nowrap">Industry:</Label>
                 <MultiSelect
                   options={industryOptions}
                   selectedValues={selectedIndustries}
@@ -442,8 +399,8 @@ export default function FilteredGrid() {
                   placeholder="Select industries..."
                 />
               </div>
-              <div className="flex items-center gap-1 xl:gap-2 2xl:gap-4">
-                <Label className="text-sm xl:text-sm 2xl:text-2xl font-medium text-gray-700 whitespace-nowrap">Investors:</Label>
+              <div className="flex items-center gap-1 xl:gap-2 2xl:gap-3 3xl:gap-4 4xl:gap-5 5xl:gap-6 6xl:gap-7">
+                <Label className="text-sm xl:text-sm 2xl:text-base 3xl:text-lg 4xl:text-xl 5xl:text-2xl 6xl:text-3xl font-medium text-gray-700 whitespace-nowrap">Investors:</Label>
                 <MultiSelect
                   options={investorOptions}
                   selectedValues={selectedInvestors}
@@ -453,12 +410,12 @@ export default function FilteredGrid() {
                   placeholder="Select investors..."
                 />
               </div>
-              <div className="flex items-center gap-2 xl:gap-2 2xl:gap-6 ml-auto">
-                <Label htmlFor="favorites" className="text-sm xl:text-sm 2xl:text-2xl font-medium text-gray-700">Favorites</Label>
+              <div className="flex items-center gap-2 xl:gap-2 2xl:gap-3 3xl:gap-4 4xl:gap-5 5xl:gap-6 6xl:gap-7 ml-auto">
+                <Label htmlFor="favorites" className="text-sm xl:text-sm 2xl:text-base 3xl:text-lg 4xl:text-xl 5xl:text-2xl 6xl:text-3xl font-medium text-gray-700">Favorites</Label>
                 <Switch
                   checked={showFavorites}
                   onCheckedChange={setShowFavorites}
-                  className="data-[state=checked]:bg-gradient-to-r data-[state=checked]:from-purple-500 data-[state=checked]:to-pink-500 data-[state=unchecked]:bg-gray-200 [&>span]:bg-white xl:scale-100 2xl:scale-150"
+                  className="data-[state=checked]:bg-gradient-to-r data-[state=checked]:from-purple-500 data-[state=checked]:to-pink-500 data-[state=unchecked]:bg-gray-200 [&>span]:bg-white xl:scale-100 2xl:scale-110 3xl:scale-125 4xl:scale-150 5xl:scale-175 6xl:scale-200"
                   style={{
                     backgroundSize: '200% 100%',
                     backgroundPosition: showFavorites ? '5% 50%' : '100% 50%',
@@ -485,13 +442,13 @@ export default function FilteredGrid() {
                 className="w-full"
               >
                 <CarouselContent className="-ml-4">
-                  {Array.from({ length: Math.ceil(filteredUnicorns.length / (window.innerWidth >= 1536 ? 16 : 6)) }).map((_, pageIndex) => (
+                  {Array.from({ length: Math.ceil(filteredUnicorns.length / 6) }).map((_, pageIndex) => (
                     <CarouselItem key={pageIndex} className="pl-4 basis-full">
                       <AnimatePresence mode="wait">
-                        <div className="grid grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4 gap-4 xl:gap-6 2xl:gap-8">
+                        <div className="grid grid-cols-3 gap-4 xl:gap-6 2xl:gap-8">
                           {filteredUnicorns.slice(
-                            pageIndex * (window.innerWidth >= 1536 ? 16 : 6),
-                            (pageIndex + 1) * (window.innerWidth >= 1536 ? 16 : 6)
+                            pageIndex * 6,
+                            (pageIndex + 1) * 6
                           ).map((unicorn, index) => (
                             <motion.div
                               key={`${unicorn.City}-${index}`}
@@ -499,7 +456,7 @@ export default function FilteredGrid() {
                               animate={{ opacity: 1, scale: 1 }}
                               exit={{ opacity: 0, scale: 0.8 }}
                               transition={{ duration: 0.3, delay: index * 0.05 }}
-                              className="h-[220px] xl:h-[220px] 2xl:h-[350px]"
+                              className="h-[220px] xl:h-[220px] 2xl:h-[255px] 3xl:h-[285px] 4xl:h-[320px] 5xl:h-[360px] 6xl:h-[400px]"
                             >
                               <UnicornCard unicorn={unicorn} />
                             </motion.div>
@@ -510,8 +467,8 @@ export default function FilteredGrid() {
                   ))}
                 </CarouselContent>
                 <div className="flex items-center justify-center mt-8 xl:mt-16 2xl:mt-16">
-                  <CarouselPrevious className="relative static mr-8 xl:mr-12 2xl:mr-16 xl:scale-125 2xl:scale-150 hover:bg-black hover:text-white transition-colors duration-300" />
-                  <CarouselNext className="relative static ml-8 xl:ml-12 2xl:ml-16 xl:scale-125 2xl:scale-150 hover:bg-black hover:text-white transition-colors duration-300" />
+                  <CarouselPrevious className="relative static mr-8 xl:mr-12 2xl:mr-16 xl:scale-110 2xl:scale-125 3xl:scale-150 4xl:scale-175 5xl:scale-200 6xl:scale-225 hover:bg-black hover:text-white transition-colors duration-300" />
+                  <CarouselNext className="relative static ml-8 xl:ml-12 2xl:ml-16 xl:scale-110 2xl:scale-125 3xl:scale-150 4xl:scale-175 5xl:scale-200 6xl:scale-225 hover:bg-black hover:text-white transition-colors duration-300" />
                 </div>
               </Carousel>
             </motion.div>
@@ -526,6 +483,37 @@ export default function FilteredGrid() {
               <p className="text-gray-500 xl:text-lg 2xl:text-2xl">No unicorns found matching the selected filters.</p>
             </motion.div>
           )}
+
+          {/* Debug Screen Size Indicator */}
+          <div className="fixed bottom-4 right-4 z-50">
+            <div className="hidden sm:block md:hidden">
+              <div className="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold p-2">S</div>
+            </div>
+            <div className="hidden md:block lg:hidden">
+              <div className="w-10 h-10 rounded-full bg-green-500 flex items-center justify-center text-white font-bold p-2">M</div>
+            </div>
+            <div className="hidden lg:block xl:hidden">
+              <div className="w-10 h-10 rounded-full bg-yellow-500 flex items-center justify-center text-white font-bold p-2">L</div>
+            </div>
+            <div className="hidden xl:block 2xl:hidden">
+              <div className="w-10 h-10 rounded-full bg-orange-500 flex items-center justify-center text-white font-bold p-2">XL</div>
+            </div>
+            <div className="hidden 2xl:block 3xl:hidden">
+              <div className="w-10 h-10 rounded-full bg-red-500 flex items-center justify-center text-white font-bold p-2">2XL</div>
+            </div>
+            <div className="hidden 3xl:block 4xl:hidden">
+              <div className="w-10 h-10 rounded-full bg-purple-500 flex items-center justify-center text-white font-bold p-2">3XL</div>
+            </div>
+            <div className="hidden 4xl:block 5xl:hidden">
+              <div className="w-10 h-10 rounded-full bg-pink-500 flex items-center justify-center text-white font-bold p-2">4XL</div>
+            </div>
+            <div className="hidden 5xl:block 6xl:hidden">
+              <div className="w-10 h-10 rounded-full bg-indigo-500 flex items-center justify-center text-white font-bold p-2">5XL</div>
+            </div>
+            <div className="hidden 6xl:block">
+              <div className="w-10 h-10 rounded-full bg-cyan-500 flex items-center justify-center text-white font-bold p-2">6XL</div>
+            </div>
+          </div>
         </motion.div>
       )}
     </AnimatePresence>

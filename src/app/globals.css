@@ -45,8 +45,8 @@
 
 @layer base {
   :root {
-    --background: 0 0% 96.1%;
-    --foreground: 0 0% 3.9%;
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
 
     --card: 0 0% 100%;
     --card-foreground: 0 0% 3.9%;
@@ -74,6 +74,8 @@
     --ring: 0 0% 3.9%;
 
     --radius: 0.5rem;
+
+    --font-geist-sans: 'Geist Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   }
 
   .dark {
@@ -140,3 +142,35 @@
 /* Your custom styles */
 @import "tailwindcss";
 @import "tw-animate-css";
+
+/* Prevent white flashes during transitions */
+html {
+  background-color: hsl(var(--background));
+}
+
+body {
+  background-color: hsl(var(--background));
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+/* Ensure canvas and modal backgrounds are never white */
+canvas {
+  background-color: transparent !important;
+}
+
+[data-portal] {
+  background-color: transparent !important;
+}
+
+/* Ensure consistent emoji rendering */
+.emoji {
+  font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", "Android Emoji", "EmojiOne Color", "EmojiOne", "Twemoji Mozilla", "Noto Emoji", "Segoe UI Symbol", "EmojiSymbols";
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}

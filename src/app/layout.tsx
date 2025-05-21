@@ -3,8 +3,10 @@ import "./globals.css";
 import { UnicornProvider } from '@/contexts/UnicornContext'
 import { FilterProvider } from '@/contexts/FilterContext'
 import { Inter } from 'next/font/google'
-import Providers from '@/components/Providers'
+import { Providers } from './providers'
 import { UnicornsProvider } from '@/contexts/UnicornsContext'
+import ClientLayout from '@/components/ClientLayout'
+import '@/styles/animations.css'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -12,7 +14,7 @@ export const metadata: Metadata = {
   title: "UNI",
   description: "Find your next unicorn",
   icons: {
-    icon: '/favicon.svg',
+    icon: "/favicon.png"
   },
 };
 
@@ -28,9 +30,9 @@ export default function RootLayout({
           <UnicornsProvider>
             <UnicornProvider>
               <FilterProvider>
-                <div className="w-full h-full overflow-hidden">
+                <ClientLayout>
                   {children}
-                </div>
+                </ClientLayout>
               </FilterProvider>
             </UnicornProvider>
           </UnicornsProvider>

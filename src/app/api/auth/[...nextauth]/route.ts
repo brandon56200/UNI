@@ -12,9 +12,11 @@ const handler = NextAuth({
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
       authorization: {
         params: {
-          prompt: "consent",
+          prompt: "select_account",
           access_type: "offline",
-          response_type: "code"
+          response_type: "code",
+          include_granted_scopes: "true",
+          scope: "openid email profile"
         }
       }
     }),
@@ -22,6 +24,10 @@ const handler = NextAuth({
   session: {
     strategy: "jwt",
     maxAge: 30 * 24 * 60 * 60, // 30 days
+  },
+  pages: {
+    signIn: '/',
+    error: '/auth/error',
   },
   callbacks: {
     async signIn({ user, account, profile, email, credentials }) {
@@ -37,13 +43,12 @@ const handler = NextAuth({
       console.log("🔍 Session Callback Called")
       console.log("Session:", JSON.stringify(session, null, 2))
       console.log("Token:", JSON.stringify(token, null, 2))
-      console.log('Prepared statements disabled?', process.env.PRISMA_DISABLE_PREPARED_STATEMENTS);
-      console.log('Database URL:', process.env.DATABASE_URL || process.env.PRISMA_DATABASE_URL);
       
-      if (session.user) {
-        session.user.id = token.sub || ""
-        session.user.email = token.email || null
-        session.user.name = token.name || null
+      if (token && session.user) {
+        session.user.id = token.id as string
+        session.user.name = token.name as string
+        session.user.email = token.email as string
+        session.user.image = token.picture as string
       }
       return session
     },
@@ -57,11 +62,16 @@ const handler = NextAuth({
         token.id = user.id
         token.email = user.email
         token.name = user.name
+        token.picture = user.image
       }
       return token
     },
     async redirect({ url, baseUrl }) {
-      return url.startsWith(baseUrl) ? url : baseUrl
+      // Prevent any loading state during redirects
+      if (url.startsWith(baseUrl)) {
+        return url
+      }
+      return baseUrl
     }
   },
   events: {
@@ -74,10 +84,6 @@ const handler = NextAuth({
     async session(message) {
       console.log("📍 Session Event:", JSON.stringify(message, null, 2))
     }
-  },
-  pages: {
-    signIn: '/',
-    error: '/auth/error',
   },
   secret: process.env.NEXTAUTH_SECRET,
 })

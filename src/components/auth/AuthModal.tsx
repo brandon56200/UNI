@@ -1,69 +1,71 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { useSession } from 'next-auth/react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { useEffect, useState } from 'react'
 
 interface AuthModalProps {
   isOpen: boolean
   onClose: () => void
+  isRedirecting?: boolean
 }
 
-export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
-  const { status } = useSession()
-  
-  // Close the modal when authentication completes
+export default function AuthModal({ isOpen, onClose, isRedirecting = false }: AuthModalProps) {
+  const [isVisible, setIsVisible] = useState(false)
+
   useEffect(() => {
-    if (status === 'authenticated' && isOpen) {
-      onClose()
+    if (isOpen) {
+      // Small delay to ensure the element is in the DOM
+      const timer = setTimeout(() => {
+        setIsVisible(true)
+      }, 50)
+      return () => clearTimeout(timer)
+    } else {
+      setIsVisible(false)
     }
-  }, [status, isOpen, onClose])
+  }, [isOpen])
+
+  if (!isOpen) return null
 
   return (
-    <AnimatePresence>
-      {isOpen && (
-        <>
-          {/* Backdrop */}
-          <motion.div
-            className="fixed inset-0 bg-black/50 z-40"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={onClose}
-          />
-          
-          {/* Modal */}
-          <motion.div
-            className="fixed inset-0 flex items-center justify-center z-50 pointer-events-none"
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.95 }}
-            transition={{ type: "spring", bounce: 0.25 }}
-          >
-            <div className="bg-white p-8 rounded-xl shadow-xl max-w-md w-full pointer-events-auto">
-              <h2 className="text-2xl font-bold mb-4">Signing in...</h2>
-              <p className="text-gray-600 mb-6">
-                Please complete the authentication process in the popup window.
-              </p>
-              
-              <div className="flex justify-center mb-8">
-                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-neutral-900"></div>
-              </div>
-              
-              <p className="text-sm text-gray-500">
-                If the popup was blocked, please enable popups for this site and try again.
-              </p>
-              
-              <button
-                onClick={onClose}
-                className="mt-6 px-4 py-2 w-full bg-neutral-950 text-white rounded-lg hover:bg-neutral-800 transition-colors"
-              >
-                Cancel
-              </button>
-            </div>
-          </motion.div>
-        </>
-      )}
-    </AnimatePresence>
+    <div className="fixed inset-0 z-40 grid place-items-center">
+      {/* Backdrop */}
+      <div 
+        className={`absolute inset-0 top-[4rem] bg-white/30 backdrop-blur-md transition-all duration-500 ease-out ${
+          isVisible ? 'opacity-100' : 'opacity-0'
+        }`}
+        onClick={isRedirecting ? undefined : onClose}
+      />
+
+      {/* Modal */}
+      <div 
+        className={`w-4/5 max-w-md bg-white rounded-lg shadow-xl p-8 transition-all duration-500 ease-out ${
+          isVisible 
+            ? 'opacity-100 translate-y-0' 
+            : 'opacity-0 translate-y-8'
+        }`}
+      >
+        <h2 className="text-2xl font-bold mb-4">Signing in...</h2>
+        <p className="text-gray-600 mb-6">
+          {isRedirecting 
+            ? "Redirecting to complete authentication..."
+            : "Please complete the authentication process in the popup window."}
+        </p>
+        
+        <div className="flex justify-center mb-8">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-neutral-900"></div>
+        </div>
+        
+        <p className="text-sm text-gray-500">
+          If the popup was blocked, please enable popups for this site and try again.
+        </p>
+        
+        <button
+          onClick={onClose}
+          className="mt-6 px-4 py-2 w-full bg-neutral-950 text-white rounded-lg hover:bg-neutral-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          disabled={isRedirecting}
+        >
+          Cancel
+        </button>
+      </div>
+    </div>
   )
 } 

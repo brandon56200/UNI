@@ -173,13 +173,15 @@ export default function AbstractCanvas({ isScrolling = false, onPrerender }: Abs
     <div className="w-full h-full">
       <Canvas
         camera={{ position: [0, 1, 4.75], fov: 45 }}
-        style={{ background: 'hsl(var(--background))' }}
+        style={{ background: 'transparent' }}
         onCreated={({ gl }) => {
           // For Three.js v0.157.0+, set outputColorSpace if available
           if ('outputColorSpace' in gl) {
             // Prefer the enum if available, otherwise fallback to string
             gl.outputColorSpace = (THREE as any).SRGBColorSpace || 'srgb';
           }
+          // Set alpha to true for transparency
+          gl.setClearColor(0x000000, 0);
           if (onPrerender) {
             onPrerender();
           }
